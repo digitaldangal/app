@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/CrochetLand/app.svg?branch=master)](https://travis-ci.org/CrochetLand/app)
 # crochet_land
 
 Crochet Land App
