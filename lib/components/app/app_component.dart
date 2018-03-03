@@ -1,40 +1,47 @@
 import 'dart:async';
 
-import 'package:crochet_land/components/projetcs/projects_component.dart';
+import 'package:crochet_land/components/home/home.dart';
 import 'package:crochet_land/components/login/login.dart';
+import 'package:crochet_land/routes.dart';
+import 'package:crochet_land/services/auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../config/theme.dart';
 
-final googleSignIn = new GoogleSignIn();
+final ROUTES = <String, WidgetBuilder>{
+  ROUTE_LOGIN: (_) => new Login(), // Login P
+  ROUTE_HOME: (_) => new Home(), // age
+};
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
+  // ignore: cancel_subscriptions
+  StreamSubscription _loginListener;
+
   @override
   Widget build(BuildContext context) {
+    _setupLoginListener(context);
     return new MaterialApp(
         title: 'Crochet.land',
         theme: defaultTargetPlatform == TargetPlatform.iOS
             ? kIOSTheme
             : kDefaultTheme,
-        routes: <String, WidgetBuilder>{
-          '/': (_) => new SplashScreen(), // Login P
-          '/home': (_) => new Home(), // age
-        });
-  }
-}
-
-
-class Home extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Meus Projetos'),
-      ),
-      body: new ProjectsList(),
+        routes: ROUTES
     );
   }
+
+
+  void _setupLoginListener(BuildContext context) {
+    if (_loginListener != null) {
+      return;
+    }
+    _loginListener = auth.onAuthStateChanged.listen((user) {
+      if (user == null) {
+        Navigator.of(context).pushReplacementNamed(ROUTE_LOGIN);
+      }
+    });
+  }
 }
+
+

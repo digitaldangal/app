@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:crochet_land/routes.dart';
 import 'package:flutter/material.dart';
 import '../../services/auth.dart';
 
 
-class SplashScreen extends StatefulWidget {
+class Login extends StatefulWidget {
   @override
   State createState() => new _SplashScreenState();
 }
@@ -32,7 +33,7 @@ class _SplashScreenState extends State {
 
   _goToHome() {
     new Future.delayed(new Duration(milliseconds: 1), () {
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed(ROUTE_HOME);
     });
   }
 
