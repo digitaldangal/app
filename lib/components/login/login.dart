@@ -1,9 +1,11 @@
 import 'dart:async';
 
-import 'package:crochet_land/routes.dart';
+import '../../routes.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../services/auth.dart';
 
+final analytics = new FirebaseAnalytics();
 
 class Login extends StatefulWidget {
   @override
@@ -17,7 +19,6 @@ class _SplashScreenState extends State {
   @override
   void initState() {
     super.initState();
-
     auth.onAuthStateChanged.listen((user) async {
       if (user != null) {
         debugPrint('Authenticated as ${user.email}');
@@ -44,11 +45,13 @@ class _SplashScreenState extends State {
       this._signinIn = true;
     });
     signInWithGoogle().then((user) {
+      analytics.logLogin();
       debugPrint('Authenticated! :-) $user');
     });
   }
 
   _signinWithFacebook() async {
+    //TODO analytics.logLogin();
     await _neverSatisfied();
   }
 

@@ -1,4 +1,5 @@
-import 'package:crochet_land/components/projetcs/projects_component.dart';
+import '../drawer.dart';
+import '../projetcs/projects_component.dart';
 import 'package:flutter/material.dart';
 
 
@@ -10,6 +11,7 @@ class Home extends StatelessWidget {
         title: new Text('Meus Projetos'),
       ),
       body: new ProjectsList(),
+      drawer: new Drawer(child: new AppDrawer(),),
     );
   }
 }
