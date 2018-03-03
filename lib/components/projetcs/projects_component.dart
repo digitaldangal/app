@@ -48,7 +48,7 @@ class _ProjectListItem extends StatelessWidget {
       ),
       title: new Text(_project.title),
       subtitle: new Text(_project.description),
-      trailing: new Icon(Icons.arrow_forward),
+      trailing: new Icon(Icons.navigate_next),
       onTap: () {
         Navigator.of(context).push(new MaterialPageRoute<Null>(
           builder: (BuildContext context) {
