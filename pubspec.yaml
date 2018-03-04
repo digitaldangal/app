@@ -12,6 +12,7 @@ dependencies:
   simple_moment: ^0.0.2
   flutter_webview_plugin: ^0.1.1
   share: ^0.3.2
+  validator: ^0.0.7
 #  image_picker: 0.1.1
   google_sign_in: 2.1.2
   firebase_analytics: 0.2.3

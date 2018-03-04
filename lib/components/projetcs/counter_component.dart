@@ -36,7 +36,7 @@ class _CounterComponentState extends State<CounterComponent>
   @override
   void initState() {
     animationController = new AnimationController(
-      duration: new Duration(milliseconds: 2000), vsync: this,)
+      duration: new Duration(milliseconds: 500), vsync: this,)
       ..addListener(() {
         setState(() {
           _project.timeSpent = _timeAnimation.value.toInt();

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 
 
   MyApp() {
-    Routes.configureRoutes(router);
+    Routes.configureRoutes(Routes.router);
   }
 
   @override
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     new FirebaseAnalyticsObserver(analytics: analytics);
     return new MaterialApp(
       title: 'Crochet.land',
-      onGenerateRoute: (routeSettings) => router.generator(routeSettings),
+      onGenerateRoute: (routeSettings) => Routes.router.generator(routeSettings),
       theme: defaultTargetPlatform == TargetPlatform.iOS
           ? kIOSTheme
           : kDefaultTheme,
