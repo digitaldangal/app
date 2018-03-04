@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/unavailable.dart';
 import '../../routes.dart';
 import '../../services/auth.dart';
 
-final analytics = new FirebaseAnalytics();
-
 class Login extends StatefulWidget {
+
   @override
   State createState() => new _SplashScreenState();
 }
 
 class _SplashScreenState extends State {
+  static Auth auth = new Auth();
+
   StreamSubscription _authListener;
 
   bool _signinIn = true;
@@ -22,10 +22,9 @@ class _SplashScreenState extends State {
   @override
   void initState() {
     super.initState();
-    _authListener = auth.onAuthStateChanged.listen((user) async {
+    _authListener = auth.firebaseAuth.onAuthStateChanged.listen((user) async {
       if (user != null) {
         debugPrint('Authenticated as ${user.email}');
-        analytics.setUserId(user.uid);
         _goToHome();
       } else {
         debugPrint('Unauthenticated :-(');
@@ -55,14 +54,12 @@ class _SplashScreenState extends State {
       (() {
       this._signinIn = true;
     });
-    signInWithGoogle().then((user) {
-      analytics.logLogin();
+    auth.signInWithGoogle().then((user) {
       debugPrint('Authenticated! :-) $user');
     });
   }
 
   _signinWithFacebook() async {
-    //TODO analytics.logLogin();
     await notImplemented(context);
   }
 
@@ -73,7 +70,7 @@ class _SplashScreenState extends State {
         children: [
           new CircularProgressIndicator(),
           new SizedBox(width: 20.0),
-          new Text("Esperany..."),
+          new Text("Carregando..."),
         ],
       ),
     ];

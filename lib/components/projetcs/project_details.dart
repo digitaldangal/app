@@ -11,31 +11,29 @@ final FirebaseAnalytics analytics = new FirebaseAnalytics();
 
 class ProjectWidget extends StatefulWidget {
 
-  String _key;
+  Project _project;
 
-  ProjectWidget(this._key);
+  ProjectWidget(this._project);
 
   @override
   State<StatefulWidget> createState() {
-    return new _ProjectWidgetState(_key);
+    return new _ProjectWidgetState(_project);
   }
+
+
 }
 
 class _ProjectWidgetState extends State<ProjectWidget> {
-  String _key;
   Project _project;
   String _webViewUrl;
 
-  _ProjectWidgetState(this._key);
+  _ProjectWidgetState(this._project);
 
 
   @override
-  void initState() {
-    new ProjectService().getProject(_key).then((project) {
-      setState(() {
-        this._project = project;
-      });
-    });
+  void dispose() {
+    new ProjectService().update(_project);
+    super.dispose();
   }
 
   _buildActionbarActions(BuildContext context) {

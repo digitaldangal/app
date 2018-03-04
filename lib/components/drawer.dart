@@ -16,16 +16,14 @@ class AppDrawer extends StatefulWidget {
 
 
 class _AppDrawerState extends State<AppDrawer> {
+  static final auth = new Auth();
+
   FirebaseUser _user;
+
 
   @override
   void initState() {
-    auth.currentUser().then((user) {
-      setState(() {
-        _user = user;
-      });
-    });
-
+    _user = auth.user;
     super.initState();
   }
 
@@ -66,7 +64,8 @@ class _AppDrawerState extends State<AppDrawer> {
         leading: new Icon(Icons.assignment,),
         title: new Text('Meus Projetos'),
         trailing: new Icon(Icons.navigate_next),
-        onTap: () => Navigator.of(context).pushReplacementNamed(Routes.projects),
+        onTap: () =>
+            Navigator.of(context).pushReplacementNamed(Routes.projects),
       ),
       new ListTile(
         leading: new Icon(Icons.dashboard,),
@@ -93,7 +92,7 @@ class _AppDrawerState extends State<AppDrawer> {
             trailing: new Icon(Icons.power_settings_new),
             title: new Text('Sair'),
             onTap: () {
-              auth.signOut();
+              auth.signout();
               Navigator.of(context).pushReplacementNamed(Routes.login);
             },
           )

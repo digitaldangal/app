@@ -55,20 +55,25 @@ class _NewProjectFormState extends State<NewProjectForm> {
                 validator: (val) {
                   return !isLength(val, 3) ? 'Escreve algo vai...' : null;
                 },
-                onSaved: (val) => _project.title = val,
+                onSaved: (val) => _project.title = val.length > 0 ? val : null,
               ),), new ListTile(
                 leading: new Icon(Icons.description), title: new TextFormField(
                 focusNode: _saving ? new AlwaysDisabledFocusNode() : null,
                 maxLines: 3,
                 decoration: new InputDecoration(labelText: 'Descrição básica'),
-                onSaved: (val) => _project.description = val,
+                onSaved: (val) =>
+                _project.description = val.length > 0 ? val : null,
               ),), new ListTile(
                 leading: new Icon(Icons.link), title: new TextFormField(
                 focusNode: _saving ? new AlwaysDisabledFocusNode() : null,
                 maxLines: 2,
-                validator: (val) => !isNull(val) && !isURL(val) ? 'Não é um link :-(' : null,
+                validator: (val) =>
+                !isNull(val) && !isURL(val)
+                    ? 'Não é um link :-('
+                    : null,
                 decoration: new InputDecoration(labelText: 'Link pro pattern'),
-                onSaved: (val) => _project.patternUrl = val,
+                onSaved: (val) =>
+                _project.patternUrl = val.length > 0 ? val : null,
               ),),
             ],
           )),
