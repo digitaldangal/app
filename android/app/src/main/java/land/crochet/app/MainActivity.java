@@ -1,4 +1,4 @@
-package land.crochet.crochetland;
+package land.crochet.app;
 
 import android.os.Bundle;
 
