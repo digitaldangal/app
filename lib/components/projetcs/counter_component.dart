@@ -12,9 +12,9 @@ String formatDuration(Duration duration) {
 
   String durationInHours = duration.inHours == 0 ? '' : duration.inHours
       .toString() + ':';
-  String twoDigitMinutes = duration.inMinutes == 0 ? '' : twoDigits(
+  String twoDigitMinutes = twoDigits(
       duration.inMinutes.remainder(Duration.MINUTES_PER_HOUR)) + ':';
-  String twoDigitSeconds = duration.inSeconds == 0 ? '' : twoDigits(
+  String twoDigitSeconds = twoDigits(
       duration.inSeconds.remainder(Duration.SECONDS_PER_MINUTE));
 
   return "$durationInHours$twoDigitMinutes$twoDigitSeconds";
