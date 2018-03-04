@@ -19,7 +19,7 @@ fi
     echo "Android Crochet.land built"
     if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "fastlane" ]]; then
       echo "Deploying to Play Store..."
-      (cd android; bundle install && bundle exec fastlane deploy_beta)
+      (cd android; bundle install && bundle exec fastlane deploy_beta --verbose)
     else
       echo "Crochet.land is only deployed to the Play Store on merged master branch commits"
     fi
