@@ -44,7 +44,7 @@ class _SplashScreenState extends State {
 
   _goToHome() {
     new Future.delayed(new Duration(milliseconds: 1), () {
-      Navigator.of(context).pushReplacementNamed(ROUTE_HOME);
+      Navigator.of(context).pushReplacementNamed(Routes.home);
     });
   }
 

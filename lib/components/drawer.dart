@@ -65,7 +65,7 @@ class _AppDrawerState extends State<AppDrawer> {
         leading: new Icon(Icons.assignment,),
         title: new Text('Meus Projetos'),
         trailing: new Icon(Icons.navigate_next),
-        onTap: () => Navigator.of(context).pushReplacementNamed(ROUTE_PROJECTS),
+        onTap: () => Navigator.of(context).pushReplacementNamed(Routes.projects),
       ),
       new ListTile(
         leading: new Icon(Icons.dashboard,),
@@ -93,7 +93,7 @@ class _AppDrawerState extends State<AppDrawer> {
             title: new Text('Sair'),
             onTap: () {
               auth.signOut();
-              Navigator.of(context).pushReplacementNamed(ROUTE_LOGIN);
+              Navigator.of(context).pushReplacementNamed(Routes.login);
             },
           )
         ],

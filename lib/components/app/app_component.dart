@@ -11,10 +11,7 @@ import 'package:firebase_analytics/observer.dart';
 
 import '../../config/theme.dart';
 
-final ROUTES = <String, WidgetBuilder>{
-  ROUTE_LOGIN: (_) => new Login(),
-  ROUTE_HOME: (_) => new Home(),
-};
+
 
 class MyApp extends StatelessWidget {
 
@@ -22,15 +19,20 @@ class MyApp extends StatelessWidget {
   static FirebaseAnalyticsObserver observer =
   new FirebaseAnalyticsObserver(analytics: analytics);
 
+
+  MyApp() {
+    Routes.configureRoutes(router);
+  }
+
   @override
   Widget build(BuildContext context) {
     new FirebaseAnalyticsObserver(analytics: analytics);
     return new MaterialApp(
       title: 'Crochet.land',
+      onGenerateRoute: (routeSettings) => router.generator(routeSettings),
       theme: defaultTargetPlatform == TargetPlatform.iOS
           ? kIOSTheme
           : kDefaultTheme,
-      routes: ROUTES,
       navigatorObservers: [ observer],
     );
   }
