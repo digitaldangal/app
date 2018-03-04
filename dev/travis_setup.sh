@@ -9,7 +9,7 @@ export PATH=$(pwd)/flutter/bin:$PATH
 
 export FLUTTER_HOME=$(pwd)/flutter
 
-echo $G_SERVICES_JSON | base64 --decode >  ../android/app/google-services.json
+echo $G_SERVICES_JSON | base64 --decode >  android/app/google-services.json
 
 if [ -n "$TRAVIS" ]; then
 
