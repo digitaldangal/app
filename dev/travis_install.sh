@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 if [ -n "$TRAVIS" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   gem install coveralls-lcov

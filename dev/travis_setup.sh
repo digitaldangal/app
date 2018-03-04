@@ -1,8 +1,4 @@
 #!/bin/bash
-set -e
-
-set -x
-
 # install flutter
 git clone https://github.com/flutter/flutter.git -b beta --depth 1
 export PATH=$(pwd)/flutter/bin:$PATH
