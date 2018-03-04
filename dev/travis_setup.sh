@@ -7,10 +7,9 @@ export FLUTTER_HOME=$(pwd)/flutter
 
 set +x
 echo $G_SERVICES_JSON | base64 --decode >  android/app/google-services.json
+echo $G_SERVICE_ACCOUNT_JSON | base64 --decode >  android/fastlane/google_service_account.json
 echo $ANDROID_UPLOAD_KEYSTORE | base64 --decode > upload.keystore
 echo $ANDROID_RELEASE_PROPERTIES | base64 --decode > release.properties
-
-ls -lat
 
 if [ -n "$TRAVIS" ]; then
 
