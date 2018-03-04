@@ -41,8 +41,6 @@ class _CounterComponentState extends State<CounterComponent>
         setState(() {
           _project.timeSpent = _timeAnimation.value.toInt();
         });
-
-//        _project.timeSpent = animationController.value.floor();
       });
 
     _timeAnimation = new Tween(begin: 0, end: _project.timeSpent).animate(
