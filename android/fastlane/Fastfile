@@ -20,11 +20,11 @@ platform :android do
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
+  lane :deploy_beta do
 
     #ensure_git_branch(branch: 'master');
 
-    gradle(task: "clean assembleRelease")
+    #gradle(task: "clean assembleRelease")
     upload_to_play_store(track: 'beta')
   
     # sh "your_script.sh"
