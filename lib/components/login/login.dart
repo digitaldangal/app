@@ -13,13 +13,14 @@ class Login extends StatefulWidget {
 }
 
 class _SplashScreenState extends State {
+  StreamSubscription _authListener;
 
   bool _signinIn = true;
 
   @override
   void initState() {
     super.initState();
-    auth.onAuthStateChanged.listen((user) async {
+    _authListener = auth.onAuthStateChanged.listen((user) async {
       if (user != null) {
         debugPrint('Authenticated as ${user.email}');
         _goToHome();
@@ -30,6 +31,13 @@ class _SplashScreenState extends State {
         });
       }
     });
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _authListener.cancel();
   }
 
   _goToHome() {

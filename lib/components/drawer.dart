@@ -74,9 +74,23 @@ class _AppDrawerState extends State<AppDrawer> {
       new Divider(height: 20.0, color: theme.primaryColor,),
       new ListTile(
         leading: new Icon(Icons.account_circle,),
-        title: new Text('Perfil'),
+        title: new Text('Minha Conta'),
         trailing: new Icon(Icons.navigate_next),
       ),
+      new Expanded(child:
+      new Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          new ListTile(
+            trailing: new Icon(Icons.power_settings_new),
+            title: new Text('Sair'),
+            onTap: () {
+              auth.signOut();
+              Navigator.of(context).pushReplacementNamed(ROUTE_LOGIN);
+            },
+          )
+        ],
+      ))
     ],);
   }
 

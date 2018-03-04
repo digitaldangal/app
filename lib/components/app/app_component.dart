@@ -22,14 +22,8 @@ class MyApp extends StatelessWidget {
   static FirebaseAnalyticsObserver observer =
   new FirebaseAnalyticsObserver(analytics: analytics);
 
-
-  // ignore: cancel_subscriptions
-  StreamSubscription _loginListener;
-
   @override
   Widget build(BuildContext context) {
-    _setupLoginListener(context);
-
     new FirebaseAnalyticsObserver(analytics: analytics);
     return new MaterialApp(
       title: 'Crochet.land',
@@ -41,17 +35,6 @@ class MyApp extends StatelessWidget {
     );
   }
 
-
-  void _setupLoginListener(BuildContext context) {
-    if (_loginListener != null) {
-      return;
-    }
-    _loginListener = auth.onAuthStateChanged.listen((user) {
-      if (user == null) {
-        Navigator.of(context).pushReplacementNamed(ROUTE_LOGIN);
-      }
-    });
-  }
 }
 
 

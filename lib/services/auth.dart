@@ -32,7 +32,7 @@ Future signInWithGoogle() async {
   return user;
 }
 
-Future signOutWithGoogle() async {
+Future signout() async {
   // Sign out with firebase
   await auth.signOut();
   // Sign out with google
