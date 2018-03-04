@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import '../../routes.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import '../../services/auth.dart';
+import 'package:flutter/material.dart';
+
 import '../../components/unavailable.dart';
+import '../../routes.dart';
+import '../../services/auth.dart';
 
 final analytics = new FirebaseAnalytics();
 

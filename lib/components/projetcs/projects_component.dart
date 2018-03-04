@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:crochet_land/components/projetcs/project_details.dart';
 import 'package:crochet_land/model/project.dart';
+import 'package:crochet_land/routes.dart';
 import 'package:crochet_land/services/project_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:crochet_land/routes.dart';
 
 
 final FirebaseAnalytics analytics = new FirebaseAnalytics();
