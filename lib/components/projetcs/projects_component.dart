@@ -3,9 +3,12 @@ import 'package:crochet_land/components/projetcs/material_list_component.dart';
 import 'package:crochet_land/components/projetcs/photos_component.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/services/project_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:share/share.dart';
+
+final FirebaseAnalytics analytics = new FirebaseAnalytics();
 
 class ProjectsList extends StatefulWidget {
   @override
@@ -16,13 +19,15 @@ class _ProjectsListState extends State<ProjectsList> {
   List<Project> _projects = [];
 
   _ProjectsListState() {
+    analytics.logViewItemList(itemCategory: 'projects');
     loadProjects();
   }
 
   @override
   Widget build(BuildContext context) {
     return new ListView.builder(
-      itemBuilder: (BuildContext context, int index) => new _ProjectListItem(_projects[index]),
+      itemBuilder: (BuildContext context, int index) =>
+      new _ProjectListItem(_projects[index]),
       itemCount: _projects.length,
     );
   }
@@ -36,6 +41,8 @@ class _ProjectsListState extends State<ProjectsList> {
 }
 
 class _ProjectListItem extends StatelessWidget {
+
+
   final Project _project;
 
   _ProjectListItem(this._project);
@@ -48,8 +55,11 @@ class _ProjectListItem extends StatelessWidget {
       ),
       title: new Text(_project.title),
       subtitle: new Text(_project.description),
-      trailing: new Icon(Icons.arrow_forward),
+      trailing: new Icon(Icons.navigate_next),
       onTap: () {
+        analytics.logViewItem(itemId: _project.key,
+            itemName: _project.title,
+            itemCategory: 'projects');
         Navigator.of(context).push(new MaterialPageRoute<Null>(
           builder: (BuildContext context) {
             return new ProjectWidget(_project);
@@ -90,26 +100,31 @@ class _ProjectWidgetState extends State<ProjectWidget> {
       new IconButton(
           icon: new Icon(Icons.open_in_new),
           onPressed: () {
+            analytics.logViewItem(itemId: _project.key + '-pattern',
+                itemName: _project.title,
+                itemCategory: 'project-patterns');
             //TODO there's an error that the url is being saved if the user navigates away from the pattern url
             Navigator.of(context).push(new MaterialPageRoute<Null>(
-                  maintainState: false,
-                  fullscreenDialog: true,
-                  builder: (BuildContext context) {
-                    return new WebviewScaffold(
-                      url: _project.patternUrl,
-                      appBar: new AppBar(
-                        title: new Text("Padrão"),
-                        actions: <Widget>[
-                          new IconButton(
-                              icon: new Icon(Icons.share),
-                              onPressed: () {
-                                share(_webViewUrl);
-                              })
-                        ],
-                      ),
-                    );
-                  },
-                ));
+              maintainState: false,
+              fullscreenDialog: true,
+              builder: (BuildContext context) {
+                return new WebviewScaffold(
+                  url: _project.patternUrl,
+                  appBar: new AppBar(
+                    title: new Text("Padrão"),
+                    actions: <Widget>[
+                      new IconButton(
+                          icon: new Icon(Icons.share),
+                          onPressed: () {
+                            analytics.logShare(contentType: 'pattern-url',
+                                itemId: _project.key);
+                            share(_webViewUrl);
+                          })
+                    ],
+                  ),
+                );
+              },
+            ));
           })
     ];
   }

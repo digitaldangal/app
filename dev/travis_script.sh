@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -ex
-
 export PATH=$(pwd)/flutter/bin:$PATH
 export FLUTTER_HOME=$(pwd)/flutter
 

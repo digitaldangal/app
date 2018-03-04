@@ -1,13 +1,11 @@
 #!/bin/bash
-set -e
-
-set -x
-
 # install flutter
 git clone https://github.com/flutter/flutter.git -b beta --depth 1
 export PATH=$(pwd)/flutter/bin:$PATH
 
 export FLUTTER_HOME=$(pwd)/flutter
+
+echo $G_SERVICES_JSON | base64 --decode >  android/app/google-services.json
 
 if [ -n "$TRAVIS" ]; then
 
