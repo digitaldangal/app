@@ -10,19 +10,48 @@ String formatDuration(Duration duration) {
     return "0$n";
   }
 
-  String durationInHours = duration.inHours == 0 ? '' : duration.inHours.toString() + ':';
-  String twoDigitMinutes = duration.inMinutes == 0 ? '' : twoDigits(duration.inMinutes.remainder(Duration.MINUTES_PER_HOUR)) + ':';
-  String twoDigitSeconds = duration.inSeconds == 0 ? '' : twoDigits(duration.inSeconds.remainder(Duration.SECONDS_PER_MINUTE));
+  String durationInHours = duration.inHours == 0 ? '' : duration.inHours
+      .toString() + ':';
+  String twoDigitMinutes = duration.inMinutes == 0 ? '' : twoDigits(
+      duration.inMinutes.remainder(Duration.MINUTES_PER_HOUR)) + ':';
+  String twoDigitSeconds = duration.inSeconds == 0 ? '' : twoDigits(
+      duration.inSeconds.remainder(Duration.SECONDS_PER_MINUTE));
 
   return "$durationInHours$twoDigitMinutes$twoDigitSeconds";
 }
 
-class _CounterComponentState extends State<CounterComponent> {
+class _CounterComponentState extends State<CounterComponent>
+    with TickerProviderStateMixin {
   Project _project;
   bool timeRunning = false;
   Timer _timer;
 
+
+  Animation<int> _timeAnimation;
+  AnimationController animationController;
+
   _CounterComponentState(this._project);
+
+
+  @override
+  void initState() {
+    animationController = new AnimationController(
+      duration: new Duration(milliseconds: 2000), vsync: this,)
+      ..addListener(() {
+        setState(() {
+          _project.timeSpent = _timeAnimation.value.toInt();
+        });
+
+//        _project.timeSpent = animationController.value.floor();
+      });
+
+    _timeAnimation = new Tween(begin: 0, end: _project.timeSpent).animate(
+        new CurvedAnimation(
+            parent: animationController, curve: Curves.fastOutSlowIn));
+
+
+    animationController.forward();
+  }
 
   _tickTime(timer) {
     setState(() {
@@ -42,20 +71,27 @@ class _CounterComponentState extends State<CounterComponent> {
 
   @override
   void dispose() {
-    super.dispose();
+    animationController.dispose();
     _pauseTimer();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var duration = new Duration(seconds: _project.timeSpent);
-    final theme = Theme.of(context).textTheme.display3;
-    return new Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
+    final theme = Theme
+        .of(context)
+        .textTheme
+        .display3;
+    return new Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
       new Column(
         children: <Widget>[
           new Text(formatDuration(duration), style: theme),
           new RaisedButton(
-            color: Theme.of(context).accentColor,
+            color: Theme
+                .of(context)
+                .accentColor,
             onPressed: () {
               print('tap iniciar/pausar');
               if (timeRunning) {
@@ -88,20 +124,24 @@ class _CounterComponentState extends State<CounterComponent> {
                   });
                 },
                 child: new RaisedButton(
-                  color: Theme.of(context).accentColor,
+                  color: Theme
+                      .of(context)
+                      .accentColor,
                   onPressed: _project.counter > 0
                       ? () {
-                          print('tap -1');
-                          setState(() {
-                            _project.counter--;
-                          });
-                        }
+                    print('tap -1');
+                    setState(() {
+                      _project.counter--;
+                    });
+                  }
                       : null,
                   child: new Text('-1'),
                 ),
               ),
               new RaisedButton(
-                color: Theme.of(context).accentColor,
+                color: Theme
+                    .of(context)
+                    .accentColor,
                 onPressed: () {
                   print('tap +1');
                   setState(() {
