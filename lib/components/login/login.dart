@@ -4,6 +4,7 @@ import '../../routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../services/auth.dart';
+import '../../components/unavailable.dart';
 
 final analytics = new FirebaseAnalytics();
 
@@ -23,6 +24,7 @@ class _SplashScreenState extends State {
     _authListener = auth.onAuthStateChanged.listen((user) async {
       if (user != null) {
         debugPrint('Authenticated as ${user.email}');
+        analytics.setUserId(user.uid);
         _goToHome();
       } else {
         debugPrint('Unauthenticated :-(');
@@ -60,34 +62,7 @@ class _SplashScreenState extends State {
 
   _signinWithFacebook() async {
     //TODO analytics.logLogin();
-    await _neverSatisfied();
-  }
-
-  Future<Null> _neverSatisfied() async {
-    return showDialog<Null>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      child: new AlertDialog(
-        title: new Text('Ainda não disponível..'),
-        content: new SingleChildScrollView(
-          child: new ListBody(
-            children: <Widget>[
-              new Text('A gente sabe que é chato.'),
-              new Text(
-                  'Mas o botão está aqui pra você saber que logo estará disponível OK?'),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          new FlatButton(
-            child: new Text('Tudo bem'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
+    await notImplemented(context);
   }
 
   _loadingWidgets() {

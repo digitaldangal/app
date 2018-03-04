@@ -2,6 +2,7 @@ import '../routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/auth.dart';
+import '../components/unavailable.dart';
 
 
 class AppDrawer extends StatefulWidget {
@@ -70,12 +71,18 @@ class _AppDrawerState extends State<AppDrawer> {
         leading: new Icon(Icons.dashboard,),
         title: new Text('Minhas coisinhas'),
         trailing: new Icon(Icons.navigate_next),
+        onTap: () {
+          notImplemented(context);
+        },
       ),
       new Divider(height: 20.0, color: theme.primaryColor,),
       new ListTile(
         leading: new Icon(Icons.account_circle,),
         title: new Text('Minha Conta'),
         trailing: new Icon(Icons.navigate_next),
+        onTap: () {
+          notImplemented(context);
+        },
       ),
       new Expanded(child:
       new Column(
