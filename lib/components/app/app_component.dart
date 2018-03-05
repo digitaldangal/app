@@ -11,8 +11,8 @@ import '../../config/theme.dart';
 class MyApp extends StatelessWidget {
 
   static FirebaseAnalytics analytics = new FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer =
-  new FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(
+      analytics: analytics);
 
 
   MyApp() {
@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    new FirebaseAnalyticsObserver(analytics: analytics);
     return new MaterialApp(
       title: 'Crochet.land',
       onGenerateRoute: (routeSettings) => Routes.router.generator(routeSettings),
