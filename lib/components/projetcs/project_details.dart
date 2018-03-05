@@ -94,12 +94,10 @@ class _ProjectWidgetState extends State<ProjectWidget> {
   }
 
   List<Tab> _buildTabs() {
-    var tabs = <Tab>[];
-    tabs.addAll([
+    return <Tab>[
       new Tab(text: 'contador'),
       new Tab(text: 'material'),
-    ]);
-    return tabs;
+    ];
   }
 
   TabBarView _buildTabBarView() {
