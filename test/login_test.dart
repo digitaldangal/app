@@ -1,12 +1,7 @@
-// This is a basic Flutter widget test.
-// To perform an interaction with a widget in your test, use the WidgetTester utility that Flutter
-// provides. For example, you can send tap and scroll gestures. You can also use WidgetTester to
-// find child widgets in the widget tree, read text, and verify that the values of widget properties
-// are correct.
-
 import 'dart:async';
 
 import 'package:crochet_land/components/login/login.dart';
+import 'package:crochet_land/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -14,29 +9,53 @@ import 'package:mockito/mockito.dart';
 import 'mocks.dart';
 
 void main() {
-  testWidgets('Login loads test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  MockAuth authMock;
+
+  MockFirebaseAuth mockFirebaseAuth;
+
+  StreamController<MockFirebaseUser> userChangeStreamController;
+
+  loggedOut() {
+    userChangeStreamController.add(null);
+  }
 
 
-    MockAuth authMock = new MockAuth();
+  loggedIn() {
+    var user = new MockFirebaseUser();
+    when(user.email).thenReturn('someone@gmail.com');
+    userChangeStreamController.add(user);
+  }
 
-    MockFirebaseAuth mockFirebaseAuth = new MockFirebaseAuth();
+  setUp(() {
+    authMock = new MockAuth();
+    mockFirebaseAuth = new MockFirebaseAuth();
+    when(authMock.firebaseAuth).thenReturn(mockFirebaseAuth);
+    userChangeStreamController = new StreamController<MockFirebaseUser>();
+
+    when(mockFirebaseAuth.onAuthStateChanged).thenReturn(
+        userChangeStreamController.stream);
 
     Login.auth = authMock;
+  });
 
-    when(authMock.firebaseAuth).thenReturn(mockFirebaseAuth);
+  tearDown(() {
+    userChangeStreamController.close();
+  });
 
-    when(mockFirebaseAuth.onAuthStateChanged)
-        .thenReturn(
-        new Stream.fromFuture(new Future.value(null))
-    );
+  testWidgets('Login with Google', (WidgetTester tester) async {
+    loggedOut();
 
+    bool routeHomeCalled = false;
 
-    await tester.pumpWidget(new MaterialApp(home: new Login(),));
+    await tester.pumpWidget(new MaterialApp(home: new Login(),
+        routes: {Routes.home: (_) {
+          routeHomeCalled = true;
+          return new Text('route_home');
+        }}));
 
     expect(find.text("Carregando..."), findsOneWidget);
 
-    await untilCalled(mockFirebaseAuth.onAuthStateChanged);
+//    await untilCalled(mockFirebaseAuth.onAuthStateChanged);
 
     await tester.pump();
 
@@ -44,15 +63,16 @@ void main() {
 
     expect(loginGoogleFinder, findsOneWidget);
 
-
     when(authMock.signInWithGoogle()).thenAnswer((_) =>
     new Future.value('Happy user'));
+
+    loggedIn();
 
     await tester.tap(find.ancestor(
         of: loginGoogleFinder, matching: find.byType(RaisedButton)));
 
-    await tester.pump();
+    await tester.pump(new Duration(milliseconds: 100));
 
-    verify(authMock.signInWithGoogle()).called(1);
+    expect(routeHomeCalled, true);
   });
 }
