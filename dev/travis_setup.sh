@@ -20,6 +20,7 @@ if [ -n "$TRAVIS" ]; then
     export ANDROID_HOME=$(pwd)/android-sdk
     export PATH=$(pwd)/android-sdk/tools/bin:$PATH
     export PATH=$(pwd)/android-sdk/tools:$PATH # so we have also android on the path
+    export PATH=$(pwd)/android-sdk/platform-tools:$PATH # so we have adb
     mkdir -p /home/travis/.android # silence sdkmanager warning
     set +x # Travis's env variable hiding is a bit wonky. Don't echo back this line.
     if [ -n "$ANDROID_UPLOAD_KEY" ]; then
@@ -32,6 +33,7 @@ if [ -n "$TRAVIS" ]; then
     echo y | sdkmanager "platform-tools" >/dev/null
     echo y | sdkmanager "build-tools;26.0.3" >/dev/null
     echo y | sdkmanager "platforms;android-26" >/dev/null
+    echo y | sdkmanager "platforms;android-25" >/dev/null
     echo y | sdkmanager "extras;android;m2repository" >/dev/null
     echo y | sdkmanager "extras;google;m2repository" >/dev/null
     echo y | sdkmanager "patcher;v4" >/dev/null
@@ -43,10 +45,19 @@ if [ -n "$TRAVIS" ]; then
     gradle -v
 
     if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "add_some_tests" ]]; then
-        echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
-        emulator -avd test -no-audio -no-window &
-        android-wait-for-emulator
-        adb shell input keyevent 82 &
+
+    # create android emulator
+    echo y | sdkmanager "emulator" >/dev/null
+    echo y | sdkmanager "system-images;android-26;google_apis;armeabi-v7a" >/dev/null
+    avdmanager create avd --force -n test3 -k 'system-images;android-25;google_apis;armeabi-v7a'  --abi armeabi-v7a
+
+    # start emulator
+    (cd android-sdk/tools/ &&  emulator -avd test -no-audio -no-window &)
+
+    adb wait-for-device
+    adb shell input keyevent 82 &
+
+
     fi
 
   fi
