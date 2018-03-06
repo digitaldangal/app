@@ -19,6 +19,7 @@ if [ -n "$TRAVIS" ]; then
     unzip -qq sdk-tools-linux-3859397.zip -d android-sdk
     export ANDROID_HOME=$(pwd)/android-sdk
     export PATH=$(pwd)/android-sdk/tools/bin:$PATH
+    export PATH=$(pwd)/android-sdk/tools:$PATH # so we have also android on the path
     mkdir -p /home/travis/.android # silence sdkmanager warning
     set +x # Travis's env variable hiding is a bit wonky. Don't echo back this line.
     if [ -n "$ANDROID_UPLOAD_KEY" ]; then
