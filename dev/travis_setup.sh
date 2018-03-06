@@ -55,13 +55,9 @@ if [ -n "$TRAVIS" ]; then
 
     adb wait-for-device
 
-    A=$(adb shell getprop sys.boot_completed | tr -d '\r')
-
-    while [ "$A" != "1" ]; do
-            sleep 2
-            echo "Waiting for the device 2 seconds more"
-            A=$(adb shell getprop sys.boot_completed | tr -d '\r')
-    done
+   curl https://raw.githubusercontent.com/travis-ci/travis-cookbooks/master/community-cookbooks/android-sdk/files/default/android-wait-for-emulator > android-wait-for-emulator
+   chmod +x android-wait-for-emulator
+   ./android-wait-for-emulator
 
     adb shell input keyevent 82
 
