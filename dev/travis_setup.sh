@@ -26,7 +26,6 @@ if [ -n "$TRAVIS" ]; then
     if [ -n "$ANDROID_UPLOAD_KEY" ]; then
       echo "$ANDROID_UPLOAD_KEY" | base64 --decode > /home/travis/.android/debug.keystore
     fi
-    set -x
     echo 'count=0' > /home/travis/.android/repositories.cfg # silence sdkmanager warning
     # suppressing output of sdkmanager to keep log under 4MB (travis limit)
     echo y | sdkmanager "tools" >/dev/null
