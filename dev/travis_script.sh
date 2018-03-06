@@ -9,9 +9,6 @@ flutter test
 
 flutter drive --target=test_driver/login.dart
 
-if [ $? -ne 0 ]; then
-    return $?;
-fi
 
   echo "Building and deploying Flutter "
   if [ "$TRAVIS_OS_NAME" = "linux" ]; then
