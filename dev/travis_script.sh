@@ -17,7 +17,7 @@ fi
     export ANDROID_HOME=$(pwd)/android-sdk
     flutter build apk --release
     echo "Android Crochet.land built"
-    if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "fastlane" ]]; then
+    if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" ]]; then
       echo "Deploying to Play Store..."
       (cd android; bundle install && bundle exec fastlane deploy_beta)
     else
