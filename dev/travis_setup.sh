@@ -37,7 +37,7 @@ if [ -n "$TRAVIS" ]; then
     echo y | sdkmanager "extras;android;m2repository" >/dev/null
     echo y | sdkmanager "extras;google;m2repository" >/dev/null
     echo y | sdkmanager "patcher;v4" >/dev/null
-    sdkmanager --list
+    #sdkmanager --list
     wget http://services.gradle.org/distributions/gradle-4.1-bin.zip
     unzip -qq gradle-4.1-bin.zip
     export GRADLE_HOME=$PWD/gradle-4.1
@@ -49,7 +49,7 @@ if [ -n "$TRAVIS" ]; then
     # create android emulator
     echo y | sdkmanager "emulator" >/dev/null
     echo y | sdkmanager "system-images;android-26;google_apis;armeabi-v7a" >/dev/null
-    avdmanager create avd --force -n test3 -k 'system-images;android-25;google_apis;armeabi-v7a'  --abi armeabi-v7a
+    avdmanager create avd --force -n test -k 'system-images;android-25;google_apis;armeabi-v7a'  --abi armeabi-v7a
 
     # start emulator
     (cd android-sdk/tools/ &&  emulator -avd test -no-audio -no-window &)
