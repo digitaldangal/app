@@ -41,6 +41,13 @@ if [ -n "$TRAVIS" ]; then
     export PATH=$GRADLE_HOME/bin:$PATH
     gradle -v
 
+    if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "add_some_tests" ]]; then
+        echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
+        emulator -avd test -no-audio -no-window &
+        android-wait-for-emulator
+        adb shell input keyevent 82 &
+    fi
+
   fi
 fi
 
