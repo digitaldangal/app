@@ -48,7 +48,7 @@ if [ -n "$TRAVIS" ]; then
 
     # create android emulator
     echo y | sdkmanager "emulator" >/dev/null
-    echo y | sdkmanager "system-images;android-26;google_apis;armeabi-v7a" >/dev/null
+    echo y | sdkmanager "system-images;android-25;google_apis;armeabi-v7a" >/dev/null
     avdmanager create avd --force -n test -k 'system-images;android-25;google_apis;armeabi-v7a'  --abi armeabi-v7a
 
     # start emulator
