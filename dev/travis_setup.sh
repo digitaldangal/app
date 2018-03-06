@@ -32,7 +32,7 @@ if [ -n "$TRAVIS" ]; then
     echo y | sdkmanager "platform-tools" >/dev/null
     echo y | sdkmanager "build-tools;26.0.3" >/dev/null
     echo y | sdkmanager "platforms;android-26" >/dev/null
-    echo y | sdkmanager "platforms;android-25" >/dev/null
+   # echo y | sdkmanager "platforms;android-25" >/dev/null
     echo y | sdkmanager "extras;android;m2repository" >/dev/null
     echo y | sdkmanager "extras;google;m2repository" >/dev/null
     echo y | sdkmanager "patcher;v4" >/dev/null
@@ -43,26 +43,28 @@ if [ -n "$TRAVIS" ]; then
     export PATH=$GRADLE_HOME/bin:$PATH
     gradle -v
 
-    if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "add_some_tests" ]]; then
+    # Never managed to boot avd on travis, several issues reported on this one.
+
+    #if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "add_some_tests" ]]; then
 
     # create android emulator
-    echo y | sdkmanager "emulator" >/dev/null
-    echo y | sdkmanager "system-images;android-25;google_apis;armeabi-v7a" >/dev/null
-    echo no | avdmanager create avd --force -n test -k 'system-images;android-25;google_apis;armeabi-v7a'  --abi armeabi-v7a
+   # echo y | sdkmanager "emulator" >/dev/null
+    #echo y | sdkmanager "system-images;android-25;google_apis;armeabi-v7a" >/dev/null
+    #echo no | avdmanager create avd --force -n test -k 'system-images;android-25;google_apis;armeabi-v7a'  --abi armeabi-v7a
 
     # start emulator
-    (cd android-sdk/tools/ &&  emulator -avd test -no-audio -no-window &)
+    #(cd android-sdk/tools/ &&  emulator -avd test -no-audio -no-window &)
 
-    adb wait-for-device
+   # adb wait-for-device
 
-   curl https://raw.githubusercontent.com/travis-ci/travis-cookbooks/master/community-cookbooks/android-sdk/files/default/android-wait-for-emulator > android-wait-for-emulator
-   chmod +x android-wait-for-emulator
-   ./android-wait-for-emulator
+   #curl https://raw.githubusercontent.com/travis-ci/travis-cookbooks/master/community-cookbooks/android-sdk/files/default/android-wait-for-emulator > android-wait-for-emulator
+   #chmod +x android-wait-for-emulator
+   #./android-wait-for-emulator
 
-    adb shell input keyevent 82
+   # adb shell input keyevent 82
 
 
-    fi
+    #fi
 
   fi
 fi
