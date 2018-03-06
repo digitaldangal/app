@@ -55,7 +55,16 @@ if [ -n "$TRAVIS" ]; then
     (cd android-sdk/tools/ &&  emulator -avd test -no-audio -no-window &)
 
     adb wait-for-device
-    adb shell input keyevent 82 &
+
+    A=$(adb shell getprop sys.boot_completed | tr -d '\r')
+
+    while [ "$A" != "1" ]; do
+            sleep 2
+            echo "Waiting for the device 2 seconds more"
+            A=$(adb shell getprop sys.boot_completed | tr -d '\r')
+    done
+
+    adb shell input keyevent 82
 
 
     fi
