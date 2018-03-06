@@ -5,7 +5,11 @@ export PATH=$(pwd)/flutter/bin:$PATH
 
 export FLUTTER_HOME=$(pwd)/flutter
 
+set +x
 echo $G_SERVICES_JSON | base64 --decode >  android/app/google-services.json
+echo $G_SERVICE_ACCOUNT_JSON | base64 --decode >  android/fastlane/google_service_account.json
+echo $ANDROID_UPLOAD_KEYSTORE | base64 --decode > android/upload.keystore
+echo $ANDROID_RELEASE_PROPERTIES | base64 --decode > android/release.properties
 
 if [ -n "$TRAVIS" ]; then
 
@@ -24,7 +28,6 @@ if [ -n "$TRAVIS" ]; then
     if [ -n "$ANDROID_UPLOAD_KEY" ]; then
       echo "$ANDROID_UPLOAD_KEY" | base64 --decode > /home/travis/.android/debug.keystore
     fi
-    set -x
     echo 'count=0' > /home/travis/.android/repositories.cfg # silence sdkmanager warning
     # suppressing output of sdkmanager to keep log under 4MB (travis limit)
     echo y | sdkmanager "tools" >/dev/null
