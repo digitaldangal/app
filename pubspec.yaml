@@ -26,6 +26,7 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   image: ^1.1.29
+  mockito: ^2.2.3
 
 
 
