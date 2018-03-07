@@ -8,8 +8,10 @@ import '../services/auth.dart';
 
 class ProjectService {
 
-  static final auth = new Auth();
+  static Auth auth = new Auth();
   static final ProjectService _instance = new ProjectService._private();
+
+  static FirebaseDatabase firebase = FirebaseDatabase.instance;
 
   factory ProjectService () => _instance;
 
@@ -18,7 +20,7 @@ class ProjectService {
 
   ProjectService._private(){
     projectsReference =
-        FirebaseDatabase.instance
+        firebase
             .reference()
             .child(auth.user.uid)
             .child('projects');
@@ -26,7 +28,6 @@ class ProjectService {
 
 
   addProject(Project project) async {
-    //TODO add to firebase
     assert(project != null);
     assert(project.title != null);
     //simulate network

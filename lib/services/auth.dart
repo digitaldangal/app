@@ -18,7 +18,7 @@ class Auth {
   FirebaseUser user;
 
   Auth._private(){
-    FirebaseAuth.instance.onAuthStateChanged.listen((user) {
+    firebaseAuth.onAuthStateChanged.listen((user) {
       this.user = user;
       if (user != null) {
         analytics.setUserId(user.uid);

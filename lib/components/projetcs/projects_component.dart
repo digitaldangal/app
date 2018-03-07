@@ -10,13 +10,17 @@ import 'package:flutter/material.dart';
 
 class ProjectsList extends StatefulWidget {
 
+  static ProjectService projectService = new ProjectService();
+
   @override
   _ProjectsListState createState() => new _ProjectsListState();
 }
 
 class _ProjectsListState extends State<ProjectsList> {
 
-  DatabaseReference _projectsRef = new ProjectService().projectsReference;
+  DatabaseReference _projectsRef = ProjectsList
+      .projectService
+      .projectsReference;
 
   _ProjectsListState() {
     AnalyticsService.analytics.logViewItemList(itemCategory: 'projects');
