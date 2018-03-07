@@ -43,6 +43,9 @@ class Project {
 
   get timestamp => _values['timestamp'];
 
+  List<String> get supplies => _values['supplies'].map((key, _) => key);
+
+  void addSupply(String key) => _values['supplies'][key] = true;
 
   @override
   String toString() {
@@ -55,10 +58,9 @@ class Project {
   }
 
 
-  Project.fromSnapshot(DataSnapshot snapshot){
-    this.key = snapshot.key;
-    this._values = snapshot.value;
-  }
+  Project.fromSnapshot(DataSnapshot snapshot)
+      : _values = snapshot.value,
+        key = snapshot.key;
 
   toMap() {
     _values['timestamp'] ??= ServerValue.timestamp;
