@@ -21,10 +21,6 @@ node_js:
 git:
   # We rely on git tags for determining the version.
   depth: false
-cache:
-  bundler: true
-  directories:
-    - $HOME/.pub-cache
 install:
   - ./dev/travis_install.sh
 
@@ -37,3 +33,13 @@ before_script:
 script:
   - ulimit -S -n 2048 # https://github.com/flutter/flutter/issues/2976
   - ./dev/travis_script.sh
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+    - $HOME/.pub-cache

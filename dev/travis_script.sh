@@ -5,11 +5,13 @@ export FLUTTER_HOME=$(pwd)/flutter
 
 export PATH="$FLUTTER_HOME/bin/cache/dart-sdk/bin:$PATH"
 
-flutter test
+flutter test --coverage
 
-if [ $? -ne 0 ]; then
-    return $?;
-fi
+cat coverage/lcov.info | codacy-coverage
+
+# never managed to get the emulator up and running on travis
+# flutter drive --target=test_driver/login.dart
+
 
   echo "Building and deploying Flutter "
   if [ "$TRAVIS_OS_NAME" = "linux" ]; then
