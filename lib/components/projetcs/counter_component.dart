@@ -20,7 +20,7 @@ String formatDuration(Duration duration) {
   return "$durationInHours$twoDigitMinutes$twoDigitSeconds";
 }
 
-class _CounterComponentState extends State<CounterComponent>
+class CounterComponentState extends State<CounterComponent>
     with TickerProviderStateMixin {
   Project _project;
   bool timeRunning = false;
@@ -30,7 +30,7 @@ class _CounterComponentState extends State<CounterComponent>
   Animation<int> _timeAnimation;
   AnimationController animationController;
 
-  _CounterComponentState(this._project);
+  CounterComponentState(this._project);
 
 
   @override
@@ -47,8 +47,15 @@ class _CounterComponentState extends State<CounterComponent>
         new CurvedAnimation(
             parent: animationController, curve: Curves.fastOutSlowIn));
 
+    setState(() {
+      _project.timeSpent = _timeAnimation.value.toInt();
+    });
 
-    animationController.forward();
+
+    new Future.delayed(new Duration(milliseconds: 200), () {
+      animationController.forward();
+    });
+    super.initState();
   }
 
   _tickTime(timer) {
@@ -85,7 +92,8 @@ class _CounterComponentState extends State<CounterComponent>
         mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
       new Column(
         children: <Widget>[
-          new Text(formatDuration(duration), style: theme),
+          new Text(
+              formatDuration(duration), style: theme, key: new Key('counter')),
           new RaisedButton(
             color: Theme
                 .of(context)
@@ -164,6 +172,6 @@ class CounterComponent extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new _CounterComponentState(this._project);
+    return new CounterComponentState(this._project);
   }
 }
