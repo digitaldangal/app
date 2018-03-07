@@ -36,11 +36,9 @@ class _AddFormSupplyState extends State<AddSupplyForm> {
 
   _AddFormSupplyState(this.onAdd);
 
-  GlobalKey<FormState> formKey = new GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    return new Form(key: formKey, child: new Row(
+    return new Form(child: new Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         new Expanded(
@@ -66,8 +64,7 @@ class _AddFormSupplyState extends State<AddSupplyForm> {
             }),
         new IconButton(icon: new Icon(Icons.add_circle), onPressed: () {
           onAdd(_supply);
-          //TODO not reseting the form
-          formKey.currentState.reset();
+          _textController.clear();
         })
       ],));
   }
