@@ -2,35 +2,24 @@ import 'package:crochet_land/model/supply.dart';
 import 'package:flutter/material.dart';
 
 class SupplyList extends StatefulWidget {
+
+  List<Supply> supplies;
+
+  SupplyList(this.supplies);
+
   @override
   State<StatefulWidget> createState() {
-    return new _SupplyListState();
+    return new _SupplyListState(supplies);
   }
 }
 
 
 class _SupplyListState extends State<SupplyList> {
 
-  List<Supply> _supplies = <Supply>[];
+  final List<Supply> _supplies;
 
-  @override
-  void initState() {
-    super.initState();
+  _SupplyListState(this._supplies);
 
-    setState(() {
-      var hook = new Supply();
-      hook.type = SupplyType.HOOK;
-      hook.name = 'Clover Amour 3.5';
-      hook.price = 10.0;
-      _supplies.add(hook);
-
-      var yarn = new Supply();
-      yarn.type = SupplyType.YARN;
-      yarn.name = 'Amigurumi Circulo Amarela';
-      yarn.price = 20.0;
-      _supplies.add(yarn);
-    });
-  }
 
   _buildListTile(Supply supply) {
     return new ListTile(
@@ -67,14 +56,6 @@ class _SupplyListState extends State<SupplyList> {
       _buildExpansionTile(durableSupplies, SupplyPricingType.DURABLE),
       _buildExpansionTile(consumableSupplies, SupplyPricingType.CONSUMABLE),
     ],));
-
-//    return new Expanded(
-//        child: new ListView.builder(
-//            itemCount: _supplies.length,
-//            itemBuilder: (context, index) {
-//              final supply = _supplies[index];
-//
-//            }));
   }
 
 
