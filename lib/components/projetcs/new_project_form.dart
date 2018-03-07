@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:validator/validator.dart';
 
 class NewProjectForm extends StatefulWidget {
+
+  static ProjectService projectService = new ProjectService();
+
   @override
   State<StatefulWidget> createState() {
     return new _NewProjectFormState();
@@ -35,7 +38,7 @@ class _NewProjectFormState extends State<NewProjectForm> {
               setState(() {
                 _saving = true;
               });
-              await new ProjectService().addProject(_project);
+              await NewProjectForm.projectService.addProject(_project);
               Navigator.of(context).pop();
             }
           },)
