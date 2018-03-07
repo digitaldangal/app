@@ -5,7 +5,11 @@ export PATH=$(pwd)/flutter/bin:$PATH
 
 export FLUTTER_HOME=$(pwd)/flutter
 
+set +x
 echo $G_SERVICES_JSON | base64 --decode >  android/app/google-services.json
+echo $G_SERVICE_ACCOUNT_JSON | base64 --decode >  android/fastlane/google_service_account.json
+echo $ANDROID_UPLOAD_KEYSTORE | base64 --decode > android/upload.keystore
+echo $ANDROID_RELEASE_PROPERTIES | base64 --decode > android/release.properties
 
 if [ -n "$TRAVIS" ]; then
 
@@ -19,27 +23,52 @@ if [ -n "$TRAVIS" ]; then
     unzip -qq sdk-tools-linux-3859397.zip -d android-sdk
     export ANDROID_HOME=$(pwd)/android-sdk
     export PATH=$(pwd)/android-sdk/tools/bin:$PATH
+    export PATH=$(pwd)/android-sdk/tools:$PATH # so we have also android on the path
+    export PATH=$(pwd)/android-sdk/platform-tools:$PATH # so we have adb
     mkdir -p /home/travis/.android # silence sdkmanager warning
     set +x # Travis's env variable hiding is a bit wonky. Don't echo back this line.
     if [ -n "$ANDROID_UPLOAD_KEY" ]; then
       echo "$ANDROID_UPLOAD_KEY" | base64 --decode > /home/travis/.android/debug.keystore
     fi
-    set -x
     echo 'count=0' > /home/travis/.android/repositories.cfg # silence sdkmanager warning
     # suppressing output of sdkmanager to keep log under 4MB (travis limit)
     echo y | sdkmanager "tools" >/dev/null
     echo y | sdkmanager "platform-tools" >/dev/null
     echo y | sdkmanager "build-tools;26.0.3" >/dev/null
     echo y | sdkmanager "platforms;android-26" >/dev/null
+   # echo y | sdkmanager "platforms;android-25" >/dev/null
     echo y | sdkmanager "extras;android;m2repository" >/dev/null
     echo y | sdkmanager "extras;google;m2repository" >/dev/null
     echo y | sdkmanager "patcher;v4" >/dev/null
-    sdkmanager --list
+    #sdkmanager --list
     wget http://services.gradle.org/distributions/gradle-4.1-bin.zip
     unzip -qq gradle-4.1-bin.zip
     export GRADLE_HOME=$PWD/gradle-4.1
     export PATH=$GRADLE_HOME/bin:$PATH
     gradle -v
+
+    # Never managed to boot avd on travis, several issues reported on this one.
+
+    #if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "add_some_tests" ]]; then
+
+    # create android emulator
+   # echo y | sdkmanager "emulator" >/dev/null
+    #echo y | sdkmanager "system-images;android-25;google_apis;armeabi-v7a" >/dev/null
+    #echo no | avdmanager create avd --force -n test -k 'system-images;android-25;google_apis;armeabi-v7a'  --abi armeabi-v7a
+
+    # start emulator
+    #(cd android-sdk/tools/ &&  emulator -avd test -no-audio -no-window &)
+
+   # adb wait-for-device
+
+   #curl https://raw.githubusercontent.com/travis-ci/travis-cookbooks/master/community-cookbooks/android-sdk/files/default/android-wait-for-emulator > android-wait-for-emulator
+   #chmod +x android-wait-for-emulator
+   #./android-wait-for-emulator
+
+   # adb shell input keyevent 82
+
+
+    #fi
 
   fi
 fi

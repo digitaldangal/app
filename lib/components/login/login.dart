@@ -8,12 +8,14 @@ import '../../services/auth.dart';
 
 class Login extends StatefulWidget {
 
+  static Auth auth = new Auth();
+
   @override
   State createState() => new _SplashScreenState();
 }
 
 class _SplashScreenState extends State {
-  static Auth auth = new Auth();
+
 
   StreamSubscription _authListener;
 
@@ -22,13 +24,15 @@ class _SplashScreenState extends State {
   @override
   void initState() {
     super.initState();
-    _authListener = auth.firebaseAuth.onAuthStateChanged.listen((user) async {
+    _authListener =
+        Login.auth.firebaseAuth.onAuthStateChanged.listen((user) async {
       if (user != null) {
         debugPrint('Authenticated as ${user.email}');
         _goToHome();
       } else {
         debugPrint('Unauthenticated :-(');
         setState(() {
+          debugPrint('_signinIn = false');
           _signinIn = false;
         });
       }
@@ -54,7 +58,7 @@ class _SplashScreenState extends State {
       (() {
       this._signinIn = true;
     });
-    auth.signInWithGoogle().then((user) {
+    Login.auth.signInWithGoogle().then((user) {
       debugPrint('Authenticated! :-) $user');
     });
   }
@@ -77,6 +81,7 @@ class _SplashScreenState extends State {
   }
 
   _signinButtons() {
+    debugPrint('_signinButtons()');
     return <Widget>[
 
       new Text(

@@ -5,11 +5,14 @@ export FLUTTER_HOME=$(pwd)/flutter
 
 export PATH="$FLUTTER_HOME/bin/cache/dart-sdk/bin:$PATH"
 
-flutter test
+flutter test --coverage
 
-if [ $? -ne 0 ]; then
-    return $?;
-fi
+cat coverage/lcov.info
+cat coverage/lcov.info | codacy-coverage
+
+# never managed to get the emulator up and running on travis
+# flutter drive --target=test_driver/login.dart
+
 
   echo "Building and deploying Flutter "
   if [ "$TRAVIS_OS_NAME" = "linux" ]; then
@@ -19,7 +22,7 @@ fi
     echo "Android Crochet.land built"
     if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" ]]; then
       echo "Deploying to Play Store..."
-    # TODO   (cd android; bundle install && bundle exec fastlane deploy_play_store)
+      (cd android; bundle install && bundle exec fastlane deploy_beta)
     else
       echo "Crochet.land is only deployed to the Play Store on merged master branch commits"
     fi
