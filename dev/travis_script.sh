@@ -7,6 +7,7 @@ export PATH="$FLUTTER_HOME/bin/cache/dart-sdk/bin:$PATH"
 
 flutter test --coverage
 
+cat coverage/lcov.info
 cat coverage/lcov.info | codacy-coverage
 
 # never managed to get the emulator up and running on travis
