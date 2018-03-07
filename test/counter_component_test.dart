@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Timer starts and stops', (WidgetTester tester) async {
-    Project project = new Project();
+  Project project;
+  setUp(() {
+    project = new Project();
     project.timeSpent = 100;
     project.counter = 10;
+  });
 
+  testWidgets('Timer starts and stops', (WidgetTester tester) async {
     await tester.pumpWidget(
         new MaterialApp(home: new CounterComponent(project)));
 
@@ -42,5 +45,52 @@ void main() {
 
     //TODO fix this test, maybe using an animation instead of a timer in the component
     // expect(project.timeSpent, greaterThan(100));
+  });
+
+
+  testWidgets('Timer counter increases', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        new MaterialApp(home: new CounterComponent(project)));
+
+    await tester.pump(new Duration(milliseconds: 250));
+
+    await tester.tap(find.text('+1'));
+
+    await tester.pump();
+
+    expect(find.text('11'), findsOneWidget);
+
+    expect(project.counter, 11);
+  });
+
+
+  testWidgets('Timer counter decreases', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        new MaterialApp(home: new CounterComponent(project)));
+
+    await tester.pump(new Duration(milliseconds: 250));
+
+    await tester.tap(find.text('-1'));
+
+    await tester.pump();
+
+    expect(find.text('9'), findsOneWidget);
+
+    expect(project.counter, 9);
+  });
+
+  testWidgets('Timer counter to zero', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        new MaterialApp(home: new CounterComponent(project)));
+
+    await tester.pump(new Duration(milliseconds: 250));
+
+    await tester.longPress(find.text('-1'));
+
+    await tester.pump();
+
+    expect(find.text('0'), findsOneWidget);
+
+    expect(project.counter, 0);
   });
 }
