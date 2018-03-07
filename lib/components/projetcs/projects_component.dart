@@ -1,16 +1,14 @@
 import 'package:crochet_land/components/projetcs/project_details.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/routes.dart';
+import 'package:crochet_land/services/analytics.dart';
 import 'package:crochet_land/services/project_service.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
-final FirebaseAnalytics analytics = new FirebaseAnalytics();
 
 class ProjectsList extends StatefulWidget {
-
 
   @override
   _ProjectsListState createState() => new _ProjectsListState();
@@ -21,7 +19,7 @@ class _ProjectsListState extends State<ProjectsList> {
   DatabaseReference _projectsRef = new ProjectService().projectsReference;
 
   _ProjectsListState() {
-    analytics.logViewItemList(itemCategory: 'projects');
+    AnalyticsService.analytics.logViewItemList(itemCategory: 'projects');
   }
 
   @override
@@ -40,7 +38,7 @@ class _ProjectsListState extends State<ProjectsList> {
               Animation<double> animation, index) {
             final project = new Project.fromSnapshot(snapshot);
             return new Column(children: <Widget>[
-              new _ProjectListItem(project),
+              new ProjectListItem(project),
               new Divider(),
             ],);
           },
@@ -49,12 +47,12 @@ class _ProjectsListState extends State<ProjectsList> {
   }
 }
 
-class _ProjectListItem extends StatelessWidget {
+class ProjectListItem extends StatelessWidget {
 
 
   final Project _project;
 
-  _ProjectListItem(this._project);
+  ProjectListItem(this._project);
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +64,16 @@ class _ProjectListItem extends StatelessWidget {
       subtitle: new Text(_project.description),
       trailing: new Icon(Icons.navigate_next),
       onTap: () {
-        analytics.logViewItem(itemId: _project.key,
+        AnalyticsService
+            .analytics.logViewItem(itemId: _project.key,
             itemName: _project.title,
-            itemCategory: 'projects');
+            itemCategory: 'projects'
+        );
+        //TODO maybe we should do a different approach on routing to this, using fluro
+        debugPrint('Project tapped');
         Navigator.of(context).push(new MaterialPageRoute<Null>(
           builder: (BuildContext context) {
+            debugPrint('Loading project widget');
             return new ProjectWidget(_project);
           },
         ));

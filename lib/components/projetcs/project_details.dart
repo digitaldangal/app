@@ -1,13 +1,12 @@
 import 'package:crochet_land/components/projetcs/counter_component.dart';
 import 'package:crochet_land/components/projetcs/material_list_component.dart';
 import 'package:crochet_land/model/project.dart';
+import 'package:crochet_land/services/analytics.dart';
 import 'package:crochet_land/services/project_service.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:share/share.dart';
 
-final FirebaseAnalytics analytics = new FirebaseAnalytics();
 
 class ProjectWidget extends StatefulWidget {
 
@@ -49,7 +48,8 @@ class _ProjectWidgetState extends State<ProjectWidget> {
       new IconButton(
           icon: new Icon(Icons.open_in_new),
           onPressed: () {
-            analytics.logViewItem(itemId: _project.key + '-pattern',
+            AnalyticsService.analytics.logViewItem(
+                itemId: _project.key + '-pattern',
                 itemName: _project.title,
                 itemCategory: 'project-patterns');
             //TODO there's an error that the url is being saved if the user navigates away from the pattern url
@@ -65,7 +65,8 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                       new IconButton(
                           icon: new Icon(Icons.share),
                           onPressed: () {
-                            analytics.logShare(contentType: 'pattern-url',
+                            AnalyticsService.analytics.logShare(
+                                contentType: 'pattern-url',
                                 itemId: _project.key);
                             share(_webViewUrl);
                           })
