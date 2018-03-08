@@ -27,14 +27,12 @@ class _AppDrawerState extends State<AppDrawer> {
     super.initState();
   }
 
-  get avatar =>
-      _user != null ? _user.photoUrl : 'http://i.pravatar.cc/300?id=a';
+  get avatar => _user?.photoUrl ?? 'http://i.pravatar.cc/300?id=a';
 
 
-  get email =>
-      _user != null ? _user.email : 'email@crochet.land';
+  get email => _user?.email ?? 'email@crochet.land';
 
-  get name => _user != null ? _user.displayName : 'Crochet.Land';
+  get name => _user?.displayName ?? 'Crochet.Land';
 
   @override
   Widget build(BuildContext context) {
