@@ -22,8 +22,8 @@ void main() {
     });
 
     test('login loads ', () async {
-      find.text('Login com Google');
-      find.text('Login com Facebook');
+      await driver.waitFor(find.text('Login com Google'));
+      await driver.waitFor(find.text('Login com Facebook'));
 
 
       AndroidScreenshots.save(
