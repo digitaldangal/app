@@ -48,7 +48,7 @@ void main() {
     expect(find.text(VALID_PATTERN_URL), findsOneWidget);
 
 
-    when(projectService.addProject(any)).thenReturn((Project project) {
+    when(projectService.insert(any)).thenReturn((Project project) {
       expect(project.title, equals(VALID_NAME));
       expect(project.description, equals(VALID_DESCRIPTION));
       expect(project.patternUrl, equals(VALID_PATTERN_URL));
@@ -59,7 +59,7 @@ void main() {
 
     await tester.pump();
 
-    verify(projectService.addProject(any)).called(1);
+    verify(projectService.insert(any)).called(1);
   });
 
   testWidgets('Project invalid name', (WidgetTester tester) async {
@@ -73,7 +73,7 @@ void main() {
 
     await tester.tap(find.byType(IconButton));
 
-    verifyNever(projectService.addProject(any));
+    verifyNever(projectService.insert(any));
   });
 
 
@@ -108,6 +108,6 @@ void main() {
 
     await tester.tap(find.byType(IconButton));
 
-    verifyNever(projectService.addProject(any));
+    verifyNever(projectService.insert(any));
   });
 }

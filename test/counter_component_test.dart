@@ -48,15 +48,16 @@ void main() {
   });
 
 
-  testWidgets('Timer counter increases', (WidgetTester tester) async {
+  testWidgets('Counter increases', (WidgetTester tester) async {
     await tester.pumpWidget(
         new MaterialApp(home: new CounterComponent(project)));
 
     await tester.pump(new Duration(milliseconds: 250));
 
+    debugPrint(project.toMap().toString());
     await tester.tap(find.text('+1'));
 
-    await tester.pump();
+    await tester.pump(new Duration(milliseconds: 200));
 
     expect(find.text('11'), findsOneWidget);
 
@@ -64,7 +65,7 @@ void main() {
   });
 
 
-  testWidgets('Timer counter decreases', (WidgetTester tester) async {
+  testWidgets('Counter decreases', (WidgetTester tester) async {
     await tester.pumpWidget(
         new MaterialApp(home: new CounterComponent(project)));
 

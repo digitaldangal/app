@@ -1,71 +1,42 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:crochet_land/model/base_firebase_entity.dart';
 
-class Project {
-  String key;
+class Project extends BaseFirebaseEntity {
 
-  Map<String, dynamic> _values;
-
-  String get title => _values['title'];
+  String get title => getValue('title');
 
   set title(String title) {
-    _values['title'] = title;
+    setValue('title', title);
   }
 
-  String get imageUrl => _values['imageUrl'];
+  String get imageUrl => getValue('imageUrl');
 
-  set imageUrl(String imageUrl) {
-    _values['imageUrl'] = imageUrl;
-  }
+  set imageUrl(String imageUrl) => setValue('imageUrl', imageUrl);
 
-  String get description => _values['description'] ?? '';
+  String get description => getValue('description') ?? '';
 
-  set description(String description) {
-    _values['description'] = description;
-  }
+  set description(String description) => setValue('description', description);
 
-  String get patternUrl => _values['patternUrl'];
+  String get patternUrl => getValue('patternUrl');
 
-  set patternUrl(String patternUrl) {
-    _values['patternUrl'] = patternUrl;
-  }
+  set patternUrl(String patternUrl) => setValue('patternUrl', patternUrl);
 
-  int get timeSpent => _values['timeSpent'] ?? 0;
+  int get timeSpent => getValue('timeSpent') ?? 0;
 
-  set timeSpent(int timeSpent) {
-    _values['timeSpent'] = timeSpent;
-  }
+  set timeSpent(int timeSpent) => setValue('timeSpent', timeSpent);
 
-  int get counter => _values['counter'] ?? 0;
+  int get counter => getValue('counter') ?? 0;
 
-  set counter(int counter) {
-    _values['counter'] = counter;
-  }
+  set counter(int counter) => setValue('counter', counter);
 
-  get timestamp => _values['timestamp'];
+  get timestamp => getValue('timestamp');
 
-  List<String> get supplies => _values['supplies'].map((key, _) => key);
+  List<String> get suppliesKeys =>
+      getValue('supplies')?.keys?.toList() ?? <String>[];
 
-  void addSupply(String key) => _values['supplies'][key] = true;
+  void addSupply(String key) => getValue('supplies')[key] = true;
 
-  @override
-  String toString() {
-    return 'Project{key: $key, title: $title}';
-  }
+  Project.fromSnapshot(snapshot) : super.fromSnapshot(snapshot);
 
-
-  Project() {
-    _values = new Map<String, dynamic>();
-  }
-
-
-  Project.fromSnapshot(DataSnapshot snapshot)
-      : _values = snapshot.value,
-        key = snapshot.key;
-
-  toMap() {
-    _values['timestamp'] ??= ServerValue.timestamp;
-    return _values;
-  }
-
+  Project();
 
 }

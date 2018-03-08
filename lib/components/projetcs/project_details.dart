@@ -105,7 +105,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
     return new TabBarView(
       children: <Widget>[
         new CounterComponent(_project),
-        new ProjectMaterials(),
+        new ProjectMaterials(_project),
       ],
     );
   }

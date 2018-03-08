@@ -20,7 +20,7 @@ class _ProjectsListState extends State<ProjectsList> {
 
   DatabaseReference _projectsRef = ProjectsList
       .projectService
-      .projectsReference;
+      .databaseReference;
 
   _ProjectsListState() {
     AnalyticsService.analytics.logViewItemList(itemCategory: 'projects');

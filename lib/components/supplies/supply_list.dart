@@ -52,7 +52,8 @@ class _SupplyListState extends State<SupplyList> {
     var consumableSupplies = _supplies.where((e) =>
     e.pricingType == SupplyPricingType.CONSUMABLE).toList();
 
-    return new Expanded(child: new Column(children: <Widget>[
+
+    return new Flexible(child: new Column(children: <Widget>[
       _buildExpansionTile(durableSupplies, SupplyPricingType.DURABLE),
       _buildExpansionTile(consumableSupplies, SupplyPricingType.CONSUMABLE),
     ],));

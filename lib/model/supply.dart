@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:crochet_land/model/base_firebase_entity.dart';
 import 'package:flutter/material.dart';
 
 enum SupplyPricingType {
@@ -39,39 +39,35 @@ final Map<SupplyType, String> supplyTypeNames = {
   SupplyType.ACCESSORIES: 'Acessórios',
 };
 
-class Supply {
+class Supply extends BaseFirebaseEntity {
 
-  String key;
 
-  Map<String, dynamic> _values = {};
+  SupplyType get type => getValue('type');
 
-  SupplyType get type => _values['type'];
+  double get price => getValue('price');
 
-  double get price => _values['price'];
+  String get name => getValue('name');
 
-  String get name => _values['name'];
+  set type(SupplyType type) => setValue('type', type);
 
-  set type(SupplyType type) => _values['type'] = type;
+  set price(double price) => setValue('price', price);
 
-  set price(double price) => _values['price'] = price;
-
-  set name(String name) => _values['name'] = name;
+  set name(String name) => setValue('name', name);
 
   SupplyPricingType get pricingType =>
-      _values['pricingType'] ?? SupplyTypePricingMap[type] ??
+      getValue('pricingType') ?? SupplyTypePricingMap[type] ??
           SupplyPricingType.CONSUMABLE;
 
 
   Supply();
 
-  Supply.fromSnapshot(DataSnapshot snapshot){
-    this.key = snapshot.key;
-    this._values = snapshot.value;
-  }
+  Supply.fromSnapshot(snapshot) : super.fromSnapshot(snapshot);
 
-  toMap() {
-    _values['timestamp'] ??= ServerValue.timestamp;
-    return _values;
+  @override
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = super.toMap();
+
+    return map;
   }
 
 

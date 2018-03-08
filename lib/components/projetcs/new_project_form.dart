@@ -38,7 +38,7 @@ class _NewProjectFormState extends State<NewProjectForm> {
               setState(() {
                 _saving = true;
               });
-              await NewProjectForm.projectService.addProject(_project);
+              await NewProjectForm.projectService.insert(_project);
               Navigator.of(context).pop();
             }
           },)

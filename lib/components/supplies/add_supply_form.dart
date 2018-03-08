@@ -3,13 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 
-/*
-TODO tasks pending:
-  Clear form not working
-
-
- */
-
 typedef void AddSupplyCallback(Supply supply);
 
 class AddSupplyForm extends StatefulWidget {
@@ -63,6 +56,7 @@ class _AddFormSupplyState extends State<AddSupplyForm> {
               });
             }),
         new IconButton(icon: new Icon(Icons.add_circle), onPressed: () {
+          debugPrint('onAdd()');
           onAdd(_supply);
           _textController.clear();
         })

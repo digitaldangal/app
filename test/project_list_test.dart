@@ -56,7 +56,7 @@ void main() {
 
     ProjectsList.projectService = projectService;
 
-    when(projectService.projectsReference).thenReturn(databaseReference);
+    when(projectService.databaseReference).thenReturn(databaseReference);
 
     await tester.pumpWidget(
         new MaterialApp(
