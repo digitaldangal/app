@@ -1,0 +1,76 @@
+import 'package:crochet_land/components/projetcs/projects_component.dart';
+import 'package:crochet_land/model/project.dart';
+import 'package:crochet_land/services/project_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+import 'mocks.dart';
+
+void main() {
+  Project project;
+  MockDatabaseReference databaseReference;
+  ProjectService projectService;
+
+  setUp(() {
+    project = new Project();
+    project.timeSpent = 100;
+    project.counter = 10;
+    project.title = 'Amazing project';
+    project.description = 'Amazing project Description';
+
+    databaseReference = new MockDatabaseReference();
+    projectService = new MockProjectService();
+  });
+
+
+  testWidgets(
+      'Project List Item loads project data', (WidgetTester tester) async {
+    MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
+
+    await tester.pumpWidget(
+        new MaterialApp(
+          home: new Scaffold(body: new ProjectListItem(project)),
+          onGenerateRoute: (_) => null,
+          //make sure it doesn't go to another paths
+          navigatorObservers: <NavigatorObserver>[
+            mockNavigatorObserver,
+          ],
+
+        )
+    );
+
+    verify(mockNavigatorObserver.didPush(any, any)).called(1);
+
+
+    expect(find.text(project.title), findsOneWidget);
+    expect(find.text(project.description), findsOneWidget);
+
+    await tester.tap(find.text(project.title));
+  });
+
+  testWidgets(
+      'Project List Item loads project data', (WidgetTester tester) async {
+    MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
+
+
+    ProjectsList.projectService = projectService;
+
+    when(projectService.databaseReference).thenReturn(databaseReference);
+
+    await tester.pumpWidget(
+        new MaterialApp(
+          home: new Scaffold(body: new ProjectsList()),
+          onGenerateRoute: (_) => null,
+          //make sure it doesn't go to another paths
+          navigatorObservers: <NavigatorObserver>[
+            mockNavigatorObserver,
+          ],
+        )
+    );
+
+    verify(databaseReference.onValue).called(greaterThan(0));
+
+    //TODO this test right now is too poor, doesn't actually test it loads, but I don't want to test the FirebaseAnimatedList
+  });
+}
