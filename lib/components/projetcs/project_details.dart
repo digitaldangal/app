@@ -1,5 +1,5 @@
 import 'package:crochet_land/components/projetcs/counter_component.dart';
-import 'package:crochet_land/components/projetcs/material_list_component.dart';
+import 'package:crochet_land/components/projetcs/project_supply_list_component.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/services/analytics.dart';
 import 'package:crochet_land/services/project_service.dart';

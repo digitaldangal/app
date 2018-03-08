@@ -10,7 +10,7 @@ void main() {
       debugPrint('test callback called');
       calledAdd = true;
       expect(supply.name, 'Agulha 1');
-      expect(supply.type, SupplyType.YARN);
+      expect(supply.type, 'Yarn');
     };
 
     await tester.pumpWidget(

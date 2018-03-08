@@ -16,39 +16,36 @@ final supplyPricingTypeIcons = const {
   SupplyPricingType.CONSUMABLE: Icons.refresh,
 };
 
+final supplyTypes = <String>[
+  'Hook', 'Yarn', 'Acessories', 'Other'
+];
 
-enum SupplyType {
-  HOOK,
-  YARN,
-  ACCESSORIES,
-  OTHER
-}
 
-const SupplyTypePricingMap = const <SupplyType, SupplyPricingType>{
-  SupplyType.HOOK: SupplyPricingType.DURABLE,
-  SupplyType.YARN: SupplyPricingType.CONSUMABLE,
-  SupplyType.OTHER: SupplyPricingType.CONSUMABLE,
-  SupplyType.ACCESSORIES: SupplyPricingType.CONSUMABLE
+const SupplyTypePricingMap = const <String, SupplyPricingType>{
+  'Hook': SupplyPricingType.DURABLE,
+  'Yarn': SupplyPricingType.CONSUMABLE,
+  'Other': SupplyPricingType.CONSUMABLE,
+  'Acessories': SupplyPricingType.CONSUMABLE
 };
 
 //TODO i18n
-final Map<SupplyType, String> supplyTypeNames = {
-  SupplyType.HOOK: 'Agulha',
-  SupplyType.YARN: 'Linha',
-  SupplyType.OTHER: 'Outros',
-  SupplyType.ACCESSORIES: 'Acessórios',
+final Map<String, String> supplyTypeNames = {
+  'Hook': 'Agulha',
+  'Yarn': 'Linha',
+  'Other': 'Outros',
+  'Acessories': 'Acessórios',
 };
 
 class Supply extends BaseFirebaseEntity {
 
 
-  SupplyType get type => getValue('type');
+  String get type => getValue('type');
 
   double get price => getValue('price');
 
   String get name => getValue('name');
 
-  set type(SupplyType type) => setValue('type', type);
+  set type(String type) => setValue('type', type);
 
   set price(double price) => setValue('price', price);
 
@@ -62,13 +59,5 @@ class Supply extends BaseFirebaseEntity {
   Supply();
 
   Supply.fromSnapshot(snapshot) : super.fromSnapshot(snapshot);
-
-  @override
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = super.toMap();
-
-    return map;
-  }
-
 
 }

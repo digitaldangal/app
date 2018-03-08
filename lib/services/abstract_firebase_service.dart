@@ -4,6 +4,8 @@ import 'package:crochet_land/model/base_firebase_entity.dart';
 import 'package:crochet_land/services/auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+/// Firebase config
+
 
 abstract class FirebaseUserAwareCrudRepository<T extends BaseFirebaseEntity>
     extends FirebaseCrudRepository {
@@ -13,12 +15,14 @@ abstract class FirebaseUserAwareCrudRepository<T extends BaseFirebaseEntity>
       : super._ref(FirebaseCrudRepository.firebase
       .reference()
       .child(auth.user.uid)
-      .child(entityName));
+      .child(entityName)
+    ..keepSynced(true));
 }
 
 abstract class FirebaseCrudRepository<T extends BaseFirebaseEntity> {
 
-  static FirebaseDatabase firebase = FirebaseDatabase.instance;
+  static FirebaseDatabase firebase = FirebaseDatabase.instance
+    ..setPersistenceEnabled(true);
   final DatabaseReference databaseReference;
 
   /// Allow other crud classes to pass their own ref
@@ -40,17 +44,28 @@ abstract class FirebaseCrudRepository<T extends BaseFirebaseEntity> {
   Future<T> insert(T entity) async {
     assert(entity != null);
     if (await beforeInsert(entity)) {
-      final newProjectRef = databaseReference.push();
-      await newProjectRef.set(entity.toMap());
+      if (entity is BaseFirebaseEntity) {
+        final newEntityRef = databaseReference.push();
+        await newEntityRef.set(entity.toMap());
+        afterInsert(entity);
+        entity.updateFromSnapshot(await newEntityRef.once());
+      }
     }
-    afterInsert(entity);
     return entity;
   }
 
-  void update(T entity) {
-    databaseReference
-        .child(entity.key)
+  Future<T> update(T entity) async {
+    var entityRef = databaseReference
+        .child(entity.key);
+    await entityRef
         .update(entity.toMap());
+    entity.updateFromSnapshot(await entityRef.once());
+    return entity;
+  }
+
+
+  DatabaseReference entityReference(String key) {
+    return databaseReference.child(key);
   }
 
 

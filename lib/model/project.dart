@@ -33,7 +33,13 @@ class Project extends BaseFirebaseEntity {
   List<String> get suppliesKeys =>
       getValue('supplies')?.keys?.toList() ?? <String>[];
 
-  void addSupply(String key) => getValue('supplies')[key] = true;
+  void addSupply(String key) {
+    if (getValue('supplies') == null) {
+      setValue('supplies', <String, bool>{key: true});
+    } else {
+      getValue('supplies')[key] = true;
+    }
+  }
 
   Project.fromSnapshot(snapshot) : super.fromSnapshot(snapshot);
 

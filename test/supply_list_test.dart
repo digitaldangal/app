@@ -6,14 +6,14 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Supply list ', (WidgetTester tester) async {
     Supply yarn = new Supply();
-    yarn.type = SupplyType.YARN;
+    yarn.type = 'Yarn';
     yarn.name = 'Yarn 1';
     yarn.price = 10.0;
 
     expect(yarn.pricingType, equals(SupplyPricingType.CONSUMABLE));
 
     Supply hook = new Supply();
-    hook.type = SupplyType.HOOK;
+    hook.type = 'Hook';
     hook.name = 'Hook 1';
     hook.price = 12.0;
     expect(hook.pricingType, equals(SupplyPricingType.DURABLE));

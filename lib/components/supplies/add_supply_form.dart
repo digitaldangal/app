@@ -46,8 +46,8 @@ class _AddFormSupplyState extends State<AddSupplyForm> {
 
             )),
         new DropdownButton(value: _supply.type,
-            items: SupplyType.values.map((type) {
-              return new DropdownMenuItem<SupplyType>(
+            items: supplyTypes.map((type) {
+              return new DropdownMenuItem<String>(
                   value: type, child: new Text(supplyTypeNames[type]));
             }).toList(),
             onChanged: (type) {

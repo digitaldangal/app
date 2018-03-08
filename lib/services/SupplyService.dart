@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:crochet_land/model/supply.dart';
 import 'package:crochet_land/services/abstract_firebase_service.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 
 class SupplyRepository extends FirebaseUserAwareCrudRepository<Supply> {
@@ -12,27 +11,17 @@ class SupplyRepository extends FirebaseUserAwareCrudRepository<Supply> {
 
   factory SupplyRepository() => _instance;
 
-  DatabaseReference supplyReference;
-
   SupplyRepository._private() : super('supplies');
 
   Future<List<Supply>> loadFromKeys(List<String> supplyKeys) async {
-    Supply yarn = new Supply();
-    yarn.type = SupplyType.YARN;
-    yarn.name = 'Yarn 1';
-    yarn.price = 10.0;
+    return await Future.wait(
+        supplyKeys
+            .map((key) async =>
+            databaseReference.child(key).once().then((snapshot) =>
+            new Supply
+                .fromSnapshot(snapshot)))
 
-    Supply hook = new Supply();
-    hook.type = SupplyType.HOOK;
-    hook.name = 'Hook 1';
-    hook.price = 12.0;
-
-
-    List<Supply> supplies = <Supply>[
-      yarn, hook, yarn, yarn, yarn, yarn, yarn, yarn,
-    ];
-
-    return supplies;
+    );
   }
 
 }

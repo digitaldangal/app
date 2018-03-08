@@ -1,4 +1,4 @@
-import 'package:crochet_land/components/projetcs/material_list_component.dart';
+import 'package:crochet_land/components/projetcs/project_supply_list_component.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/model/supply.dart';
 import 'package:crochet_land/services/SupplyService.dart';
@@ -26,12 +26,12 @@ void main() {
 
     yarn = new Supply();
 
-    yarn.type = SupplyType.YARN;
+    yarn.type = 'Yarn';
     yarn.name = 'Yarn 1';
     yarn.price = 10.0;
 
     hook = new Supply();
-    hook.type = SupplyType.HOOK;
+    hook.type = 'Hook';
     hook.name = 'Hook 1';
     hook.price = 12.0;
   });

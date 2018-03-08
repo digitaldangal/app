@@ -26,9 +26,7 @@ class _SupplyListState extends State<SupplyList> {
       leading: new CircleAvatar(
         child: new Text(supplyTypeNames[supply.type][0]),),
       title: new Text(supply.name),
-      trailing: new Icon(
-          supply.pricingType == SupplyPricingType.DURABLE ? Icons
-              .all_inclusive : Icons.refresh),
+      trailing: new Icon(supplyPricingTypeIcons[supply.pricingType]),
       subtitle: supply.price != null
           ? new Text('\$${supply.price}')
           : null,

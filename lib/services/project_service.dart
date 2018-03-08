@@ -11,5 +11,4 @@ class ProjectService extends FirebaseUserAwareCrudRepository<Project> {
 
   ProjectService._private() : super('projects');
 
-
 }

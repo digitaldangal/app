@@ -4,9 +4,11 @@ import 'package:meta/meta.dart';
 
 abstract class BaseFirebaseEntity {
 
-  final DataSnapshot _snapshot;
+  DataSnapshot _snapshot;
 
   final _values = <String, dynamic>{};
+
+  BaseFirebaseEntity() : _snapshot = null;
 
   String get key => _snapshot?.key;
 
@@ -32,7 +34,9 @@ abstract class BaseFirebaseEntity {
     return '$runtimeType {key: $key}';
   }
 
-  BaseFirebaseEntity() : _snapshot = null;
+  void updateFromSnapshot(DataSnapshot snapshot) {
+    this._snapshot = snapshot;
+  }
 
 
 }
