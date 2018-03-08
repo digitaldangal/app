@@ -18,6 +18,7 @@ void main() {
   setUp(() {
     supplyService = new MockSupplyService();
     ProjectMaterials.supplyService = supplyService;
+    ProjectMaterials.projectService = new MockProjectService();
     project = new Project();
     project.timeSpent = 100;
     project.counter = 10;
