@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 
@@ -26,6 +28,34 @@ class Auth {
     });
   }
 
+  Future signInWithFacebook() async {
+    var facebookLogin = new FacebookLogin();
+    FacebookLoginResult result =
+    await facebookLogin.logInWithReadPermissions(['email']);
+    var user;
+    var accessToken;
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        accessToken = result.accessToken.token;
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+      case FacebookLoginStatus.error:
+      // TODO show something to the user?
+      //_showErrorOnUI(result.errorMessage);
+    }
+
+    try {
+      user = await firebaseAuth.signInWithFacebook(accessToken: accessToken);
+    } catch (e) {
+      if (e is PlatformException) {
+        print(e.message);
+        print(e.code);
+        print(e.details);
+      }
+    }
+    return _onLogin(user);
+  }
+
 
   Future signInWithGoogle() async {
     // Attempt to get the currently authenticated user
@@ -38,6 +68,9 @@ class Auth {
       // Force the user to interactively sign in
       currentUser = await googleSignIn.signIn();
     }
+    if (googleSignIn.currentUser == null) {
+      return null;
+    }
 
     final GoogleSignInAuthentication googleAuth = await currentUser
         .authentication;
@@ -48,6 +81,10 @@ class Auth {
       accessToken: googleAuth.accessToken,
     );
 
+    return _onLogin(user);
+  }
+
+  _onLogin(user) {
     assert(user != null);
     assert(!user.isAnonymous);
     analytics.logLogin();

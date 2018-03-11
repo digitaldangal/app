@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../components/unavailable.dart';
 import '../../routes.dart';
 import '../../services/auth.dart';
 
@@ -26,17 +25,17 @@ class _SplashScreenState extends State {
     super.initState();
     _authListener =
         Login.auth.firebaseAuth.onAuthStateChanged.listen((user) async {
-      if (user != null) {
-        debugPrint('Authenticated as ${user.email}');
-        _goToHome();
-      } else {
-        debugPrint('Unauthenticated :-(');
-        setState(() {
-          debugPrint('_signinIn = false');
-          _signinIn = false;
+          if (user != null) {
+            debugPrint('Authenticated as ${user.email}');
+            _goToHome();
+          } else {
+            debugPrint('Unauthenticated :-(');
+            setState(() {
+              debugPrint('_signinIn = false');
+              _signinIn = false;
+            });
+          }
         });
-      }
-    });
   }
 
 
@@ -53,18 +52,34 @@ class _SplashScreenState extends State {
   }
 
 
-  _signinWithGoogle() {
+  _signinWithGoogle() async {
     setState
       (() {
       this._signinIn = true;
     });
-    Login.auth.signInWithGoogle().then((user) {
+    await Login.auth.signInWithGoogle().then((user) {
       debugPrint('Authenticated! :-) $user');
+    }).catchError((err) {
+      debugPrint('Error signin in with google $err');
+    });
+    setState
+      (() {
+      this._signinIn = false;
     });
   }
 
   _signinWithFacebook() async {
-    await notImplemented(context);
+    setState
+      (() {
+      this._signinIn = true;
+    });
+    await Login.auth.signInWithFacebook().then((user) {
+      debugPrint('Authenticated! :-) $user');
+    });
+    setState
+      (() {
+      this._signinIn = false;
+    });
   }
 
   _loadingWidgets() {
