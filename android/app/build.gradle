@@ -29,6 +29,8 @@ android {
         versionCode 2
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [fb_app_id: System.getenv("FB_APP_ID"), fb_login_protocol_scheme: System.getenv("FB_LOGIN_PROTOCOL_SCHEME")]
+
     }
 
     signingConfigs {
