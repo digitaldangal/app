@@ -38,15 +38,13 @@ class _ProjectsListState extends State<ProjectsList> {
           query: _projectsRef,
           sort: (a, b) => b.key.compareTo(a.key),
           padding: new EdgeInsets.all(8.0),
-          itemBuilder: (context, DataSnapshot snapshot,
-              Animation<double> animation, index) {
+          itemBuilder: (context, DataSnapshot snapshot, Animation<double> animation, index) {
             final project = new Project.fromSnapshot(snapshot);
-            return new Column(children: <Widget>[
+            return new FadeTransition(opacity: animation, child: new Column(children: <Widget>[
               new ProjectListItem(project),
               new Divider(),
-            ],);
+            ],));
           },
-
         ));
   }
 }
