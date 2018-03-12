@@ -67,7 +67,7 @@ class _AppDrawerState extends State<AppDrawer> {
       ),
       new ListTile(
         leading: new Icon(Icons.dashboard,),
-        title: new Text('Minhas coisinhas'),
+        title: new Text('Minhas Coisíneas'),
         trailing: new Icon(Icons.navigate_next),
         onTap: () {
           notImplemented(context);
@@ -80,6 +80,15 @@ class _AppDrawerState extends State<AppDrawer> {
         trailing: new Icon(Icons.navigate_next),
         onTap: () {
           notImplemented(context);
+        },
+      ),
+      new Divider(height: 20.0, color: theme.primaryColor,),
+      new ListTile(
+        leading: new Icon(Icons.favorite_border, color: Colors.redAccent,),
+        title: new Text('Bacanices'),
+        trailing: new Icon(Icons.navigate_next),
+        onTap: () {
+          Routes.router.navigateTo(context, Routes.news);
         },
       ),
       new Expanded(child:

@@ -1,3 +1,4 @@
+import 'package:crochet_land/components/blog_post_list.dart';
 import 'package:crochet_land/components/home/home.dart';
 import 'package:crochet_land/components/login/login.dart';
 import 'package:crochet_land/components/projetcs/new_project_form.dart';
@@ -26,6 +27,11 @@ var newProjectRouteHandler = new Handler(
       return new NewProjectForm();
     });
 
+var newsRouteHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      return new BlogPostList();
+    });
+
 class Routes {
 
   static final router = new Router();
@@ -34,11 +40,13 @@ class Routes {
   static String home = '/home';
   static String projects = home;
   static String newProject = '/projects/new';
+  static String news = '/news';
 
   static void configureRoutes(Router router) {
     router.define(login, handler: loginRouteHandler);
     router.define(home, handler: projectsRouteHandler);
     router.define(newProject, handler: newProjectRouteHandler);
+    router.define(news, handler: newsRouteHandler);
   }
 
 }
