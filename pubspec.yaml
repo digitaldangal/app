@@ -28,6 +28,7 @@ dev_dependencies:
     sdk: flutter
   image: ^1.1.29
   mockito: ^2.2.3
+  url_launcher: ^3.0.0
 
 
 
