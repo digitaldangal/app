@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:crochet_land/components/projetcs/projects_component.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/services/project_service.dart';
@@ -37,8 +39,8 @@ void main() {
             mockNavigatorObserver,
           ],
 
-        )
-    );
+          )
+        );
 
     verify(mockNavigatorObserver.didPush(any, any)).called(1);
 
@@ -66,11 +68,30 @@ void main() {
           navigatorObservers: <NavigatorObserver>[
             mockNavigatorObserver,
           ],
-        )
-    );
+          )
+        );
 
     verify(databaseReference.onValue).called(greaterThan(0));
 
     //TODO this test right now is too poor, doesn't actually test it loads, but I don't want to test the FirebaseAnimatedList
+  });
+
+  testWidgets(
+      'Project loads empty message when project list is empty', (WidgetTester tester) async {
+    ProjectsList.projectService = projectService;
+
+    when(projectService.databaseReference).thenReturn(databaseReference);
+
+    when(databaseReference.onValue).thenAnswer((_) => new Stream.empty());
+
+    await tester.pumpWidget(
+        new MaterialApp(
+          home: new Scaffold(body: new ProjectsList()),
+          )
+        );
+
+    verify(databaseReference.onValue).called(greaterThan(0));
+
+    expect(find.text('Você ainda não começou nenhum projeto...'), findsOneWidget);
   });
 }

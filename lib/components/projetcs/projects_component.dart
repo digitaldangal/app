@@ -38,6 +38,7 @@ class _ProjectsListState extends State<ProjectsList> {
           query: _projectsRef,
           sort: (a, b) => b.key.compareTo(a.key),
           padding: new EdgeInsets.all(8.0),
+          defaultChild: new Center(child: new Text('Você ainda não começou nenhum projeto...'),),
           itemBuilder: (context, DataSnapshot snapshot, Animation<double> animation, index) {
             final project = new Project.fromSnapshot(snapshot);
             return new FadeTransition(opacity: animation, child: new Column(children: <Widget>[
