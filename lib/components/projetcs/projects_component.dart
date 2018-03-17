@@ -1,4 +1,5 @@
 import 'package:crochet_land/components/projetcs/project_details.dart';
+import 'package:crochet_land/components/undoable_snack_action.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/routes.dart';
 import 'package:crochet_land/services/analytics.dart';
@@ -7,9 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
-
 class ProjectsList extends StatefulWidget {
-
   static ProjectService projectService = new ProjectService();
 
   @override
@@ -17,10 +16,7 @@ class ProjectsList extends StatefulWidget {
 }
 
 class _ProjectsListState extends State<ProjectsList> {
-
-  DatabaseReference _projectsRef = ProjectsList
-      .projectService
-      .databaseReference;
+  DatabaseReference _projectsRef = ProjectsList.projectService.databaseReference;
 
   _ProjectsListState() {
     AnalyticsService.analytics.logViewItemList(itemCategory: 'projects');
@@ -29,30 +25,35 @@ class _ProjectsListState extends State<ProjectsList> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        floatingActionButton: new FloatingActionButton(onPressed: () {
-          Routes.router.navigateTo(context, Routes.newProject);
-        },
+        floatingActionButton: new FloatingActionButton(
+          onPressed: () {
+            Routes.router.navigateTo(context, Routes.newProject);
+          },
           child: new Icon(Icons.add),
         ),
         body: new FirebaseAnimatedList(
-          query: _projectsRef,
+          query: _projectsRef.orderByChild('archived').endAt(false),
           sort: (a, b) => b.key.compareTo(a.key),
           padding: new EdgeInsets.all(8.0),
-          defaultChild: new Center(child: new Text('Você ainda não começou nenhum projeto...'),),
+          defaultChild: new Center(
+            child: new Text('Você ainda não começou nenhum projeto...'),
+          ),
           itemBuilder: (context, DataSnapshot snapshot, Animation<double> animation, index) {
             final project = new Project.fromSnapshot(snapshot);
-            return new FadeTransition(opacity: animation, child: new Column(children: <Widget>[
-              new ProjectListItem(project),
-              new Divider(),
-            ],));
+            return new FadeTransition(
+                opacity: animation,
+                child: new Column(
+                  children: <Widget>[
+                    new ProjectListItem(project),
+                    new Divider(),
+                  ],
+                ));
           },
         ));
   }
 }
 
 class ProjectListItem extends StatelessWidget {
-
-
   final Project _project;
 
   ProjectListItem(this._project);
@@ -67,11 +68,8 @@ class ProjectListItem extends StatelessWidget {
       subtitle: new Text(_project.description),
       trailing: new Icon(Icons.navigate_next),
       onTap: () {
-        AnalyticsService
-            .analytics.logViewItem(itemId: _project.key,
-            itemName: _project.title,
-            itemCategory: 'projects'
-        );
+        AnalyticsService.analytics
+            .logViewItem(itemId: _project.key, itemName: _project.title, itemCategory: 'projects');
         //TODO maybe we should do a different approach on routing to this, using fluro
         debugPrint('Project tapped');
         Navigator.of(context).push(new MaterialPageRoute<Null>(
@@ -80,6 +78,71 @@ class ProjectListItem extends StatelessWidget {
             return new ProjectWidget(_project);
           },
         ));
+      },
+      onLongPress: () {
+        showModalBottomSheet(
+            context: context,
+            builder: (btSheetContext) {
+              return new Container(
+                  child: new Padding(
+                      padding: new EdgeInsets.all(8.0),
+                      child: new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          new ListTile(
+                            leading: new Icon(Icons.edit),
+                            title: new Text(
+                              'Editar',
+//                              textAlign: TextAlign.center,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .body1,
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              //TODO Missing implementation
+                              debugPrint('Editing');
+                            },
+                          ),
+                          new ListTile(
+                            leading: new Icon(Icons.archive),
+                            title: new Text(
+                              'Arquivar',
+//                              textAlign: TextAlign.center,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .body1,
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              showUndoableAction(context, "Projeto arquivado", () {
+                                ProjectsList.projectService.archive(this._project);
+                              });
+                            },
+                          ),
+                          new ListTile(
+                            leading: new Icon(Icons.delete),
+                            title: new Text(
+                              'Remover',
+//                              textAlign: TextAlign.center,
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .body1
+                                  .copyWith(color: Colors.red),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              showUndoableAction(context, "Projeto removido", () {
+                                ProjectsList.projectService.delete(this._project);
+                              });
+                            },
+                          ),
+                        ],
+                      )));
+            });
       },
     );
   }

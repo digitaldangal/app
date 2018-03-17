@@ -1,9 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:meta/meta.dart';
 
-
 abstract class BaseFirebaseEntity {
-
   DataSnapshot _snapshot;
 
   final _values = <String, dynamic>{};
@@ -38,5 +36,7 @@ abstract class BaseFirebaseEntity {
     this._snapshot = snapshot;
   }
 
+  bool get archived => getValue('archived') ?? false;
 
+  set archived(bool archived) => setValue('archived', archived);
 }
