@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../drawer.dart';
-import '../projetcs/projects_component.dart';
-
 
 class Home extends StatelessWidget {
+  final AppBar appBar;
+  final Widget body;
+
+  Home({this.appBar, this.body});
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Meus Projetos'),
+      appBar: appBar,
+      body: body,
+      drawer: new Drawer(
+        child: new AppDrawer(),
       ),
-      body: new ProjectsList(),
-      drawer: new Drawer(child: new AppDrawer(),),
     );
   }
 }
