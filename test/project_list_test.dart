@@ -23,27 +23,25 @@ void main() {
 
     databaseReference = new MockDatabaseReference();
     projectService = new MockProjectService();
+    when(projectService.databaseReference).thenReturn(databaseReference);
+
+    when(databaseReference.orderByChild(any)).thenReturn(databaseReference);
+    when(databaseReference.endAt(any)).thenReturn(databaseReference);
   });
 
-
-  testWidgets(
-      'Project List Item loads project data', (WidgetTester tester) async {
+  testWidgets('Project List Item loads project data', (WidgetTester tester) async {
     MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
 
-    await tester.pumpWidget(
-        new MaterialApp(
-          home: new Scaffold(body: new ProjectListItem(project)),
-          onGenerateRoute: (_) => null,
-          //make sure it doesn't go to another paths
-          navigatorObservers: <NavigatorObserver>[
-            mockNavigatorObserver,
-          ],
-
-          )
-        );
+    await tester.pumpWidget(new MaterialApp(
+      home: new Scaffold(body: new ProjectListItem(project)),
+      onGenerateRoute: (_) => null,
+      //make sure it doesn't go to another paths
+      navigatorObservers: <NavigatorObserver>[
+        mockNavigatorObserver,
+      ],
+    ));
 
     verify(mockNavigatorObserver.didPush(any, any)).called(1);
-
 
     expect(find.text(project.title), findsOneWidget);
     expect(find.text(project.description), findsOneWidget);
@@ -51,44 +49,36 @@ void main() {
     await tester.tap(find.text(project.title));
   });
 
-  testWidgets(
-      'Project List Item loads project data', (WidgetTester tester) async {
+  testWidgets('Project List Item loads project data', (WidgetTester tester) async {
     MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
-
 
     ProjectsList.projectService = projectService;
 
-    when(projectService.databaseReference).thenReturn(databaseReference);
-
-    await tester.pumpWidget(
-        new MaterialApp(
-          home: new Scaffold(body: new ProjectsList()),
-          onGenerateRoute: (_) => null,
-          //make sure it doesn't go to another paths
-          navigatorObservers: <NavigatorObserver>[
-            mockNavigatorObserver,
-          ],
-          )
-        );
+    await tester.pumpWidget(new MaterialApp(
+      home: new Scaffold(body: new ProjectsList()),
+      onGenerateRoute: (_) => null,
+      //make sure it doesn't go to another paths
+      navigatorObservers: <NavigatorObserver>[
+        mockNavigatorObserver,
+      ],
+    ));
 
     verify(databaseReference.onValue).called(greaterThan(0));
 
     //TODO this test right now is too poor, doesn't actually test it loads, but I don't want to test the FirebaseAnimatedList
   });
 
-  testWidgets(
-      'Project loads empty message when project list is empty', (WidgetTester tester) async {
+  testWidgets('Project loads empty message when project list is empty',
+          (WidgetTester tester) async {
     ProjectsList.projectService = projectService;
 
     when(projectService.databaseReference).thenReturn(databaseReference);
 
     when(databaseReference.onValue).thenAnswer((_) => new Stream.empty());
 
-    await tester.pumpWidget(
-        new MaterialApp(
-          home: new Scaffold(body: new ProjectsList()),
-          )
-        );
+    await tester.pumpWidget(new MaterialApp(
+      home: new Scaffold(body: new ProjectsList()),
+    ));
 
     verify(databaseReference.onValue).called(greaterThan(0));
 

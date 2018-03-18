@@ -36,12 +36,14 @@ final Map<String, String> supplyTypeNames = {
   'Acessories': 'Acessórios',
 };
 
+const defaultSupplyType = 'Yarn';
+
 class Supply extends BaseFirebaseEntity {
 
 
-  String get type => getValue('type');
+  String get type => getValue('type') ?? defaultSupplyType;
 
-  double get price => getValue('price');
+  double get price => double.parse(getValue('price')?.toString() ?? '0');
 
   String get name => getValue('name');
 
