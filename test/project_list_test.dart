@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:crochet_land/components/projetcs/projects_component.dart';
 import 'package:crochet_land/model/project.dart';
-import 'package:crochet_land/services/project_service.dart';
+import 'package:crochet_land/services/project_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -12,7 +12,7 @@ import 'mocks.dart';
 void main() {
   Project project;
   MockDatabaseReference databaseReference;
-  ProjectService projectService;
+  ProjectRepository projectService;
 
   setUp(() {
     project = new Project();

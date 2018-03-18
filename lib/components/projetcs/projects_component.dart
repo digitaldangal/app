@@ -1,22 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crochet_land/components/projetcs/project_details.dart';
 import 'package:crochet_land/components/undoable_snack_action.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/routes.dart';
 import 'package:crochet_land/services/analytics.dart';
-import 'package:crochet_land/services/project_service.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:crochet_land/services/project_repository.dart';
 import 'package:flutter/material.dart';
 
 class ProjectsList extends StatefulWidget {
-  static ProjectService projectService = new ProjectService();
+  static ProjectRepository projectService = new ProjectRepository();
 
   @override
   _ProjectsListState createState() => new _ProjectsListState();
 }
 
 class _ProjectsListState extends State<ProjectsList> {
-  DatabaseReference _projectsRef = ProjectsList.projectService.databaseReference;
+  CollectionReference _projectsRef = ProjectsList.projectService.databaseReference;
 
   _ProjectsListState() {
     AnalyticsService.analytics.logViewItemList(itemCategory: 'projects');
@@ -31,25 +30,37 @@ class _ProjectsListState extends State<ProjectsList> {
           },
           child: new Icon(Icons.add),
         ),
-        body: new FirebaseAnimatedList(
-          query: _projectsRef.orderByChild('archived').endAt(false),
-          sort: (a, b) => b.key.compareTo(a.key),
-          padding: new EdgeInsets.all(8.0),
-          defaultChild: new Center(
-            child: new Text('Você ainda não começou nenhum projeto...'),
-          ),
-          itemBuilder: (context, DataSnapshot snapshot, Animation<double> animation, index) {
-            final project = new Project.fromSnapshot(snapshot);
-            return new FadeTransition(
-                opacity: animation,
-                child: new Column(
-                  children: <Widget>[
-                    new ProjectListItem(project),
-                    new Divider(),
-                  ],
-                ));
-          },
-        ));
+        body: new StreamBuilder(
+          //TODO fix archived
+            stream: _projectsRef.snapshots,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return new Center(child: new CircularProgressIndicator());
+              }
+              debugPrint(snapshot.data.documents.length.toString());
+              debugPrint(snapshot.data.documents.toString());
+
+
+              if (snapshot.data.documents.length == 0) {
+                return new Center(
+                    child: new Text('Parece que você ainda não comecçou nenhum projeto'));
+              }
+              return new AnimatedList(
+                  padding: new EdgeInsets.all(8.0),
+                  initialItemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index, animation) {
+                    final project = new Project.fromSnapshot(snapshot.data.documents[index]);
+                    debugPrint(project.toString());
+                    return new FadeTransition(
+                        opacity: animation,
+                        child: new Column(
+                          children: <Widget>[
+                            new ProjectListItem(project),
+                            new Divider(),
+                          ],
+                        ));
+                  });
+            }));
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:crochet_land/services/SupplyService.dart';
 import 'package:crochet_land/services/auth.dart';
-import 'package:crochet_land/services/project_service.dart';
+import 'package:crochet_land/services/project_repository.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -23,6 +23,6 @@ class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class MockDatabaseReference extends Mock implements DatabaseReference {}
 
-class MockProjectService extends Mock implements ProjectService {}
+class MockProjectService extends Mock implements ProjectRepository {}
 
 class MockSupplyService extends Mock implements SupplyRepository {}

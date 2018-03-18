@@ -1,6 +1,6 @@
 import 'package:crochet_land/components/projetcs/new_project_form.dart';
 import 'package:crochet_land/model/project.dart';
-import 'package:crochet_land/services/project_service.dart';
+import 'package:crochet_land/services/project_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -17,7 +17,7 @@ void main() {
 //  const VALID_PATTERN_URL = 'http://crochet.land/pattern-1';
 //  const INVALID_PATTERN_URL = 'http://croc het.land/patt ern-1';
 
-  ProjectService projectService;
+  ProjectRepository projectService;
   setUp(() {
     projectService = new MockProjectService();
     NewProjectForm.projectService = projectService;

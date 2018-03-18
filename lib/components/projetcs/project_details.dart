@@ -1,7 +1,7 @@
 import 'package:crochet_land/components/projetcs/counter_component.dart';
 import 'package:crochet_land/components/projetcs/project_supply_list_component.dart';
 import 'package:crochet_land/model/project.dart';
-import 'package:crochet_land/services/project_service.dart';
+import 'package:crochet_land/services/project_repository.dart';
 import 'package:flutter/material.dart';
 
 class ProjectWidget extends StatefulWidget {
@@ -25,7 +25,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
 
   @override
   void dispose() {
-    new ProjectService().update(_project);
+    new ProjectRepository().update(_project);
     super.dispose();
   }
 

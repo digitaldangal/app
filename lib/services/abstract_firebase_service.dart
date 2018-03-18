@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crochet_land/model/base_firebase_entity.dart';
 import 'package:crochet_land/services/auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 /// Firebase config
 
@@ -11,22 +11,20 @@ abstract class FirebaseUserAwareCrudRepository<T extends BaseFirebaseEntity>
   static Auth auth = new Auth();
 
   FirebaseUserAwareCrudRepository(String entityName)
-      : super._ref(FirebaseCrudRepository.firebase
-      .reference()
-      .child(auth.user.uid)
-      .child(entityName)
-    ..keepSynced(true));
+      : super._ref(
+      FirebaseCrudRepository.firebase.collection('users').document(auth.user.uid).getCollection(
+          entityName));
 }
 
 abstract class FirebaseCrudRepository<T extends BaseFirebaseEntity> {
-  static FirebaseDatabase firebase = FirebaseDatabase.instance..setPersistenceEnabled(true);
-  final DatabaseReference databaseReference;
+  static Firestore firebase = Firestore.instance;
+  final CollectionReference databaseReference;
 
   /// Allow other crud classes to pass their own ref
   FirebaseCrudRepository._ref(this.databaseReference);
 
   FirebaseCrudRepository(String entityName)
-      : databaseReference = firebase.reference().child(entityName);
+      : databaseReference = Firestore.instance.collection(entityName);
 
   Future<bool> beforeInsert(T entity) async => true;
 
@@ -40,10 +38,10 @@ abstract class FirebaseCrudRepository<T extends BaseFirebaseEntity> {
     assert(entity != null);
     if (await beforeInsert(entity)) {
       if (entity is BaseFirebaseEntity) {
-        final newEntityRef = databaseReference.push();
-        await newEntityRef.set(entity.toMap());
+        final newEntityRef = databaseReference.document();
+        await newEntityRef.setData(entity.toMap());
         afterInsert(entity);
-        entity.updateFromSnapshot(await newEntityRef.once());
+        entity.updateFromSnapshot(await newEntityRef.get());
       }
     }
     return entity;
@@ -51,23 +49,23 @@ abstract class FirebaseCrudRepository<T extends BaseFirebaseEntity> {
 
   Future<T> update(T entity) async {
     var entityRef = entityReference(entity.key);
-    await entityRef.update(entity.toMap());
-    entity.updateFromSnapshot(await entityRef.once());
+    await entityRef.updateData(entity.toMap());
+    entity.updateFromSnapshot(await entityRef.get());
     return entity;
   }
 
-  DatabaseReference entityReference(String key) {
-    return databaseReference.child(key);
+  DocumentReference entityReference(String key) {
+    return databaseReference.document(key);
   }
 
   delete(T entity) {
     print('$entity deleted');
-    entityReference(entity.key).remove();
+    entityReference(entity.key).delete();
   }
 
   archive(T entity) {
     print('$entity archived');
     entity.archived = true;
-    entityReference(entity.key).update(entity.toMap());
+    entityReference(entity.key).updateData(entity.toMap());
   }
 }

@@ -1,10 +1,10 @@
 import 'package:crochet_land/model/project.dart';
-import 'package:crochet_land/services/project_service.dart';
+import 'package:crochet_land/services/project_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:validator/validator.dart';
 
 class NewProjectForm extends StatefulWidget {
-  static ProjectService projectService = new ProjectService();
+  static ProjectRepository projectService = new ProjectRepository();
 
   @override
   State<StatefulWidget> createState() {
