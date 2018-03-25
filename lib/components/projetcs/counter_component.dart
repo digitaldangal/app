@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:crochet_land/model/project.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,47 +11,41 @@ String formatDuration(Duration duration) {
     return "0$n";
   }
 
-  String durationInHours = duration.inHours == 0 ? '' : duration.inHours
-      .toString() + ':';
-  String twoDigitMinutes = twoDigits(
-      duration.inMinutes.remainder(Duration.MINUTES_PER_HOUR)) + ':';
-  String twoDigitSeconds = twoDigits(
-      duration.inSeconds.remainder(Duration.SECONDS_PER_MINUTE));
+  String durationInHours = duration.inHours == 0 ? '' : duration.inHours.toString() + ':';
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(Duration.MINUTES_PER_HOUR)) + ':';
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(Duration.SECONDS_PER_MINUTE));
 
   return "$durationInHours$twoDigitMinutes$twoDigitSeconds";
 }
 
-class CounterComponentState extends State<CounterComponent>
-    with TickerProviderStateMixin {
+class CounterComponentState extends State<CounterComponent> with TickerProviderStateMixin {
   Project _project;
   bool timeRunning = false;
   Timer _timer;
-
 
   Animation<int> _timeAnimation;
   AnimationController animationController;
 
   CounterComponentState(this._project);
 
-
   @override
   void initState() {
     animationController = new AnimationController(
-      duration: new Duration(milliseconds: 500), vsync: this,)
+      duration: new Duration(milliseconds: 500),
+      vsync: this,
+    )
       ..addListener(() {
         setState(() {
           _project.timeSpent = _timeAnimation.value.toInt();
         });
       });
 
-    _timeAnimation = new Tween(begin: 0, end: _project.timeSpent).animate(
-        new CurvedAnimation(
-            parent: animationController, curve: Curves.fastOutSlowIn));
+    _timeAnimation = new Tween(begin: 0, end: _project.timeSpent)
+        .animate(new CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn));
 
     setState(() {
       _project.timeSpent = _timeAnimation.value.toInt();
     });
-
 
     new Future.delayed(new Duration(milliseconds: 200), () {
       animationController.forward();
@@ -81,6 +76,45 @@ class CounterComponentState extends State<CounterComponent>
     super.dispose();
   }
 
+  _buildTimePassedDialog() {
+    final initialDuration = new Duration(seconds: _project.timeSpent);
+
+    int hours = initialDuration.inHours;
+    int minutes = (initialDuration.inMinutes - (hours * 60)).floor();
+
+    final hoursScrollController = new FixedExtentScrollController(initialItem: hours);
+    final minutesScrollController = new FixedExtentScrollController(initialItem: minutes);
+
+    return new Row(
+      children: <Widget>[
+        new Expanded(
+            child: new CupertinoPicker(
+                backgroundColor: Colors.white,
+                scrollController: hoursScrollController,
+                itemExtent: 48.0,
+                onSelectedItemChanged: (newHours) {
+                  hours = newHours;
+                  _project.timeSpent = new Duration(hours: newHours, minutes: minutes).inSeconds;
+                  debugPrint('Time spent: ${_project.timeSpent}');
+                },
+                children: new List<Widget>.generate(
+                    100, (index) => new Center(child: new Text('$index h'))))),
+        new Expanded(
+            child: new CupertinoPicker(
+                backgroundColor: Colors.white,
+                scrollController: minutesScrollController,
+                itemExtent: 48.0,
+                onSelectedItemChanged: (newMinutes) {
+                  minutes = newMinutes;
+                  _project.timeSpent = new Duration(hours: hours, minutes: newMinutes).inSeconds;
+                  debugPrint('Time spent: ${_project.timeSpent}');
+                },
+                children: new List<Widget>.generate(
+                    60, (index) => new Center(child: new Text('$index m'))))),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var duration = new Duration(seconds: _project.timeSpent);
@@ -88,12 +122,16 @@ class CounterComponentState extends State<CounterComponent>
         .of(context)
         .textTheme
         .display3;
-    return new Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
+    return new Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
       new Column(
         children: <Widget>[
-          new Text(
-              formatDuration(duration), style: theme, key: new Key('counter')),
+          new GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                    context: context, builder: (context) => _buildTimePassedDialog());
+//                showDialog(context: context, child: _buildTimePassedDialog());
+              },
+              child: new Text(formatDuration(duration), style: theme, key: new Key('counter'))),
           new RaisedButton(
             color: Theme
                 .of(context)
