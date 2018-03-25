@@ -9,3 +9,19 @@ Crochet Land App
 
 For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
+
+## Update icons
+
+Update the file in `pubspect.yaml`
+
+```yaml
+flutter_icons:
+  image_path: "icons/logo-yellow.png" #update this file
+  android: true
+
+```
+Generate icons
+
+```bash
+flutter pub pub run flutter_launcher_icons:main
+```
