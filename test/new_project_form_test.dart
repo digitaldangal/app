@@ -4,6 +4,7 @@ import 'package:crochet_land/services/project_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:service_registry/service_registry.dart';
 import 'package:validator/validator.dart' show isURL;
 
 import 'mocks.dart';
@@ -20,7 +21,7 @@ void main() {
   ProjectService projectService;
   setUp(() {
     projectService = new MockProjectService();
-    NewProjectForm.projectService = projectService;
+    ServiceRegistry.registerService(ProjectService, projectService);
   });
 
   testWidgets('New Project creation', (WidgetTester tester) async {

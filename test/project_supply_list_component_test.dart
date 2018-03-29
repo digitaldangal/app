@@ -2,9 +2,11 @@ import 'package:crochet_land/components/projetcs/project_supply_list_component.d
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/model/supply.dart';
 import 'package:crochet_land/services/SupplyService.dart';
+import 'package:crochet_land/services/project_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:service_registry/service_registry.dart';
 
 import 'mocks.dart';
 
@@ -12,13 +14,13 @@ void main() {
   Supply yarn;
   Supply hook;
 
-
   Project project;
   SupplyRepository supplyService;
   setUp(() {
     supplyService = new MockSupplyService();
-    ProjectMaterials.supplyService = supplyService;
-    ProjectMaterials.projectService = new MockProjectService();
+    ServiceRegistry.registerService(ProjectService, new MockProjectService());
+    ServiceRegistry.registerService(SupplyRepository, supplyService);
+
     project = new Project();
     project.timeSpent = 100;
     project.counter = 10;
@@ -37,32 +39,29 @@ void main() {
     hook.price = 12.0;
   });
   group("Supply loading tests", () {
-    testWidgets(
-        'Project Supply list is loading at first', (WidgetTester tester) async {
+    testWidgets('Project Supply list is loading at first', (WidgetTester tester) async {
       MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
-
 
       expect(yarn.pricingType, equals(SupplyPricingType.CONSUMABLE));
 
-
       expect(hook.pricingType, equals(SupplyPricingType.DURABLE));
 
-      List<Supply> supplies = <Supply>[yarn, hook,];
+      List<Supply> supplies = <Supply>[
+        yarn,
+        hook,
+      ];
 
       // make sure it takes more than the test execution
-      when(supplyService.loadFromKeys(any))
-          .thenReturn(new Future.value(supplies));
+      when(supplyService.loadFromKeys(any)).thenReturn(new Future.value(supplies));
 
-      await tester.pumpWidget(
-          new MaterialApp(
-            home: new Scaffold(body: new ProjectMaterials(project)),
-            onGenerateRoute: (_) => null,
-            //make sure it doesn't go to another paths
-            navigatorObservers: <NavigatorObserver>[
-              mockNavigatorObserver,
-            ],
-
-          ));
+      await tester.pumpWidget(new MaterialApp(
+        home: new Scaffold(body: new ProjectMaterials(project)),
+        onGenerateRoute: (_) => null,
+        //make sure it doesn't go to another paths
+        navigatorObservers: <NavigatorObserver>[
+          mockNavigatorObserver,
+        ],
+      ));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
@@ -71,33 +70,28 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsNothing);
     });
 
-
-    testWidgets(
-        'Project Supply list loads the given supplies', (
-        WidgetTester tester) async {
+    testWidgets('Project Supply list loads the given supplies', (WidgetTester tester) async {
       MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
-
 
       expect(yarn.pricingType, equals(SupplyPricingType.CONSUMABLE));
 
-
       expect(hook.pricingType, equals(SupplyPricingType.DURABLE));
 
-      List<Supply> supplies = <Supply>[yarn, hook,];
+      List<Supply> supplies = <Supply>[
+        yarn,
+        hook,
+      ];
 
-      when(supplyService.loadFromKeys(any))
-          .thenReturn(new Future.value(supplies));
+      when(supplyService.loadFromKeys(any)).thenReturn(new Future.value(supplies));
 
-      await tester.pumpWidget(
-          new MaterialApp(
-            home: new Scaffold(body: new ProjectMaterials(project)),
-            onGenerateRoute: (_) => null,
-            //make sure it doesn't go to another paths
-            navigatorObservers: <NavigatorObserver>[
-              mockNavigatorObserver,
-            ],
-
-          ));
+      await tester.pumpWidget(new MaterialApp(
+        home: new Scaffold(body: new ProjectMaterials(project)),
+        onGenerateRoute: (_) => null,
+        //make sure it doesn't go to another paths
+        navigatorObservers: <NavigatorObserver>[
+          mockNavigatorObserver,
+        ],
+      ));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
@@ -109,26 +103,21 @@ void main() {
       expect(find.text(hook.name), findsWidgets);
     });
 
-
-    testWidgets(
-        'Project Supply loads empty message', (WidgetTester tester) async {
+    testWidgets('Project Supply loads empty message', (WidgetTester tester) async {
       MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
 
       List<Supply> supplies = <Supply>[];
 
-      when(supplyService.loadFromKeys(any))
-          .thenReturn(new Future.value(supplies));
+      when(supplyService.loadFromKeys(any)).thenReturn(new Future.value(supplies));
 
-      await tester.pumpWidget(
-          new MaterialApp(
-            home: new Scaffold(body: new ProjectMaterials(project)),
-            onGenerateRoute: (_) => null,
-            //make sure it doesn't go to another paths
-            navigatorObservers: <NavigatorObserver>[
-              mockNavigatorObserver,
-            ],
-
-          ));
+      await tester.pumpWidget(new MaterialApp(
+        home: new Scaffold(body: new ProjectMaterials(project)),
+        onGenerateRoute: (_) => null,
+        //make sure it doesn't go to another paths
+        navigatorObservers: <NavigatorObserver>[
+          mockNavigatorObserver,
+        ],
+      ));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
@@ -140,26 +129,21 @@ void main() {
     });
   });
 
-
   group("Supply list manipulation", () {
-    testWidgets(
-        'Supply is added to the list', (WidgetTester tester) async {
+    testWidgets('Supply is added to the list', (WidgetTester tester) async {
       MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
       List<Supply> supplies = <Supply>[];
 
-      when(supplyService.loadFromKeys(any))
-          .thenReturn(new Future.value(supplies));
+      when(supplyService.loadFromKeys(any)).thenReturn(new Future.value(supplies));
 
-      await tester.pumpWidget(
-          new MaterialApp(
-            home: new Scaffold(body: new ProjectMaterials(project)),
-            onGenerateRoute: (_) => null,
-            //make sure it doesn't go to another paths
-            navigatorObservers: <NavigatorObserver>[
-              mockNavigatorObserver,
-            ],
-
-          ));
+      await tester.pumpWidget(new MaterialApp(
+        home: new Scaffold(body: new ProjectMaterials(project)),
+        onGenerateRoute: (_) => null,
+        //make sure it doesn't go to another paths
+        navigatorObservers: <NavigatorObserver>[
+          mockNavigatorObserver,
+        ],
+      ));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
@@ -167,9 +151,7 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsNothing);
 
-      when(supplyService.insert(any))
-          .thenAnswer((_) => supplies.add(yarn));
-
+      when(supplyService.insert(any)).thenAnswer((_) => supplies.add(yarn));
 
       await tester.pump();
 
@@ -178,7 +160,6 @@ void main() {
       await tester.tap(find.byType(DropdownButton));
 
       await tester.pump();
-
 
       //dropdown animation
       await tester.pump();

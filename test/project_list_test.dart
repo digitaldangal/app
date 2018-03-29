@@ -6,6 +6,7 @@ import 'package:crochet_land/services/project_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:service_registry/service_registry.dart';
 
 import 'mocks.dart';
 
@@ -27,6 +28,8 @@ void main() {
 
     when(databaseReference.orderByChild(any)).thenReturn(databaseReference);
     when(databaseReference.endAt(any)).thenReturn(databaseReference);
+
+    ServiceRegistry.registerService(ProjectService, projectService);
   });
 
   testWidgets('Project List Item loads project data', (WidgetTester tester) async {
@@ -52,8 +55,6 @@ void main() {
   testWidgets('Project List Item loads project data', (WidgetTester tester) async {
     MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
 
-    ProjectsList.projectService = projectService;
-
     await tester.pumpWidget(new MaterialApp(
       home: new Scaffold(body: new ProjectsList()),
       onGenerateRoute: (_) => null,
@@ -70,8 +71,6 @@ void main() {
 
   testWidgets('Project loads empty message when project list is empty',
           (WidgetTester tester) async {
-    ProjectsList.projectService = projectService;
-
     when(projectService.databaseReference).thenReturn(databaseReference);
 
     when(databaseReference.onValue).thenAnswer((_) => new Stream.empty());
