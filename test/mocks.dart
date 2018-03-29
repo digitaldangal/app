@@ -25,4 +25,4 @@ class MockDatabaseReference extends Mock implements DatabaseReference {}
 
 class MockProjectService extends Mock implements ProjectService {}
 
-class MockSupplyService extends Mock implements SupplyRepository {}
+class MockSupplyRepository extends Mock implements SupplyRepository {}

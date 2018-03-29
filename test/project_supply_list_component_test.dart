@@ -17,7 +17,7 @@ void main() {
   Project project;
   SupplyRepository supplyService;
   setUp(() {
-    supplyService = new MockSupplyService();
+    supplyService = new MockSupplyRepository();
     ServiceRegistry.registerService(ProjectService, new MockProjectService());
     ServiceRegistry.registerService(SupplyRepository, supplyService);
 

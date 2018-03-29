@@ -1,9 +1,17 @@
 import 'package:crochet_land/components/supplies/supply_list.dart';
 import 'package:crochet_land/model/supply.dart';
+import 'package:crochet_land/services/SupplyService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:service_registry/service_registry.dart';
+
+import 'mocks.dart';
 
 void main() {
+  setUp(() {
+    ServiceRegistry.registerService(SupplyRepository, new MockSupplyRepository());
+  });
+
   testWidgets('Supply list ', (WidgetTester tester) async {
     Supply yarn = new Supply();
     yarn.type = 'Yarn';
