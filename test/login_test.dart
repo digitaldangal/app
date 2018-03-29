@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:crochet_land/components/login/login.dart';
-import 'package:crochet_land/routes.dart';
+import 'package:crochet_land/config/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

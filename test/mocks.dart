@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mockito/mockito.dart';
 
 
-class MockAuth extends Mock implements Auth {}
+class MockAuth extends Mock implements AuthenticationService {}
 
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}

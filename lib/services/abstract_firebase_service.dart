@@ -1,25 +1,26 @@
 import 'dart:async';
 
 import 'package:crochet_land/model/base_firebase_entity.dart';
-import 'package:crochet_land/services/auth.dart';
+import 'package:crochet_land/stores/user_store.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:service_registry/service_registry.dart';
 
 /// Firebase config
 
 abstract class FirebaseUserAwareCrudRepository<T extends BaseFirebaseEntity>
     extends FirebaseCrudRepository {
-  static Auth auth = new Auth();
+  static UserStore userStore = ServiceRegistry.getService<UserStore>(UserStore);
 
   FirebaseUserAwareCrudRepository(String entityName)
-      : super._ref(FirebaseCrudRepository.firebase
+      : super._ref(ServiceRegistry.getService<FirebaseDatabase>(FirebaseDatabase)
       .reference()
-      .child(auth.user.uid)
+      .child(userStore.user.uid)
       .child(entityName)
     ..keepSynced(true));
 }
 
 abstract class FirebaseCrudRepository<T extends BaseFirebaseEntity> {
-  static FirebaseDatabase firebase = FirebaseDatabase.instance..setPersistenceEnabled(true);
+  static FirebaseDatabase firebase = ServiceRegistry.getService<FirebaseDatabase>(FirebaseDatabase);
   final DatabaseReference databaseReference;
 
   /// Allow other crud classes to pass their own ref

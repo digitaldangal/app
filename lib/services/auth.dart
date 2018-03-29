@@ -1,27 +1,27 @@
 import 'dart:async';
 
+import 'package:crochet_land/stores/user_store.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:service_registry/service_registry.dart';
 
 final GoogleSignIn googleSignIn = new GoogleSignIn();
 
-class Auth {
+class AuthenticationService {
+  static final FirebaseAnalytics analytics =
+  ServiceRegistry.getService<FirebaseAnalytics>(FirebaseAnalytics);
 
-  static final FirebaseAnalytics analytics = new FirebaseAnalytics();
-  static final Auth _instance = new Auth._private();
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  static final AuthenticationService _instance = new AuthenticationService._private();
+  final FirebaseAuth firebaseAuth = ServiceRegistry.getService<FirebaseAuth>(FirebaseAuth);
 
-  factory Auth() => _instance;
+  factory AuthenticationService() => _instance;
 
-  FirebaseUser user;
-
-  Auth._private(){
+  AuthenticationService._private() {
     firebaseAuth.onAuthStateChanged.listen((user) {
-      this.user = user;
+      UserStore.updateUserAction(user);
       if (user != null) {
         analytics.setUserId(user.uid);
       }
@@ -30,8 +30,7 @@ class Auth {
 
   Future signInWithFacebook() async {
     var facebookLogin = new FacebookLogin();
-    FacebookLoginResult result =
-    await facebookLogin.logInWithReadPermissions(['email']);
+    FacebookLoginResult result = await facebookLogin.logInWithReadPermissions(['email']);
     var user;
     var accessToken;
     switch (result.status) {
@@ -56,7 +55,6 @@ class Auth {
     return _onLogin(user);
   }
 
-
   Future signInWithGoogle() async {
     // Attempt to get the currently authenticated user
     GoogleSignInAccount currentUser = googleSignIn.currentUser;
@@ -72,11 +70,10 @@ class Auth {
       return null;
     }
 
-    final GoogleSignInAuthentication googleAuth = await currentUser
-        .authentication;
+    final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
 
     // Authenticate with firebase
-    user = await firebaseAuth.signInWithGoogle(
+    var user = await firebaseAuth.signInWithGoogle(
       idToken: googleAuth.idToken,
       accessToken: googleAuth.accessToken,
     );
@@ -91,12 +88,10 @@ class Auth {
     return user;
   }
 
-  Future signout() async {
+  Future logout() async {
     // Sign out with firebase
     await firebaseAuth.signOut();
     // Sign out with google
     await googleSignIn.signOut();
   }
-
-
 }

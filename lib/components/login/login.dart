@@ -1,43 +1,42 @@
 import 'dart:async';
 
+import 'package:crochet_land/config/routes.dart';
+import 'package:crochet_land/stores/user_store.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:service_registry/service_registry.dart';
 
-import '../../routes.dart';
 import '../../services/auth.dart';
 
 class Login extends StatefulWidget {
-
-  static Auth auth = new Auth();
+  final AuthenticationService auth = ServiceRegistry.getService(AuthenticationService);
 
   @override
-  State createState() => new _SplashScreenState();
+  State createState() => new _LoginState();
 }
 
-class _SplashScreenState extends State {
-
-
+class _LoginState extends State<Login> {
   StreamSubscription _authListener;
 
-  bool _signinIn = true;
+  bool _signingIn = true;
 
   @override
   void initState() {
     super.initState();
-    _authListener =
-        Login.auth.firebaseAuth.onAuthStateChanged.listen((user) async {
-          if (user != null) {
-            debugPrint('Authenticated as ${user.email}');
-            _goToHome();
-          } else {
-            debugPrint('Unauthenticated :-(');
-            setState(() {
-              debugPrint('_signinIn = false');
-              _signinIn = false;
-            });
-          }
+    _authListener = ServiceRegistry.getService<UserStore>(UserStore).listen((store) {
+      var user = (store as UserStore).user;
+      if (user != null) {
+        debugPrint('Authenticated as ${user.email}');
+        _goToHome();
+      } else {
+        debugPrint('Unauthenticated :-(');
+        setState(() {
+          debugPrint('_signinIn = false');
+          _signingIn = false;
         });
+      }
+    });
   }
-
 
   @override
   void dispose() {
@@ -46,39 +45,34 @@ class _SplashScreenState extends State {
   }
 
   _goToHome() {
-    new Future.delayed(new Duration(milliseconds: 1), () {
-      Navigator.of(context).pushReplacementNamed(Routes.home);
+    new Future.microtask(() {
+      ServiceRegistry.getService<Router>(Router).navigateTo(context, Routes.home, replace: true);
     });
   }
 
-
-  _signinWithGoogle() async {
-    setState
-      (() {
-      this._signinIn = true;
+  _signInWithGoogle() async {
+    setState(() {
+      this._signingIn = true;
     });
-    await Login.auth.signInWithGoogle().then((user) {
+    await widget.auth.signInWithGoogle().then((user) {
       debugPrint('Authenticated! :-) $user');
     }).catchError((err) {
       debugPrint('Error signin in with google $err');
     });
-    setState
-      (() {
-      this._signinIn = false;
+    setState(() {
+      this._signingIn = false;
     });
   }
 
-  _signinWithFacebook() async {
-    setState
-      (() {
-      this._signinIn = true;
+  _signInWithFacebook() async {
+    setState(() {
+      this._signingIn = true;
     });
-    await Login.auth.signInWithFacebook().then((user) {
+    await widget.auth.signInWithFacebook().then((user) {
       debugPrint('Authenticated! :-) $user');
     });
-    setState
-      (() {
-      this._signinIn = false;
+    setState(() {
+      this._signingIn = false;
     });
   }
 
@@ -95,25 +89,32 @@ class _SplashScreenState extends State {
     ];
   }
 
-  _signinButtons() {
+  _signInButtons() {
     debugPrint('_signinButtons()');
     return <Widget>[
-
       new Text(
         'Faça login para poder salvar seus dados e recuperar a qualquer momento',
         textAlign: TextAlign.center,
-      )
-      ,
-      new RaisedButton.icon(onPressed: _signinWithGoogle,
-          icon: new Icon(Icons.account_circle, color: Colors.red,),
+      ),
+      new RaisedButton.icon(
+          onPressed: _signInWithGoogle,
+          icon: new Icon(
+            Icons.account_circle,
+            color: Colors.red,
+          ),
           label: new Text("Login com Google"),
           color: Colors.white),
-      new RaisedButton.icon(onPressed: () => _signinWithFacebook(),
-        icon: new Icon(Icons.face, color: Colors.white,),
+      new RaisedButton.icon(
+        onPressed: () => _signInWithFacebook(),
+        icon: new Icon(
+          Icons.face,
+          color: Colors.white,
+        ),
         label: new Text(
-          "Login com Facebook", style: new TextStyle(color: Colors.white),),
+          "Login com Facebook",
+          style: new TextStyle(color: Colors.white),
+        ),
         color: new Color.fromRGBO(59, 89, 152, 1.0),
-
       ),
       new Text(
         'Ainda estamos terminando de escrever nossos Termos de Serviço, mas garantimos que não vai rolar coisa do mal.',
@@ -125,12 +126,11 @@ class _SplashScreenState extends State {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        body: new Padding(padding: new EdgeInsets.all(20.0),
-            child: new Center(child: new Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: _signinIn ? _loadingWidgets() : _signinButtons()
-            ))
-        )
-    );
+        body: new Padding(
+            padding: new EdgeInsets.all(20.0),
+            child: new Center(
+                child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: _signingIn ? _loadingWidgets() : _signInButtons()))));
   }
 }

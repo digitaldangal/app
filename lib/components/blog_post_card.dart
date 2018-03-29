@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BlogPostCard extends StatelessWidget {
-  String _url;
-  String _imageUrl;
-  String _summary;
-  String _title;
+  final String _url;
+  final String _imageUrl;
+  final String _summary;
+  final String _title;
 
   BlogPostCard(this._url, this._imageUrl, this._title, this._summary);
 

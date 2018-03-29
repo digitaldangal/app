@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 typedef void AddSupplyCallback(Supply supply);
 
 class AddSupplyForm extends StatefulWidget {
-  AddSupplyCallback onAddSupply = (_) {};
+  final AddSupplyCallback onAddSupply;
 
   AddSupplyForm({@required this.onAddSupply});
 

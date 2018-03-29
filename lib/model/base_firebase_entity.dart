@@ -4,18 +4,22 @@ import 'package:meta/meta.dart';
 abstract class BaseFirebaseEntity {
   DataSnapshot _snapshot;
 
-  final _values = <String, dynamic>{};
+  final Map<String, dynamic> _values;
 
-  BaseFirebaseEntity() : _snapshot = null;
+  BaseFirebaseEntity()
+      : _snapshot = null,
+        _values = {};
 
-  String get key => _snapshot?.key;
+  BaseFirebaseEntity.fromValues(Map<String, dynamic> values) : _values = values;
+
+  String get key => _snapshot?.key ?? _values['key'];
 
   int get timestamp => getValue('timestamp');
 
   Map<String, dynamic> get values => _snapshot?.value ?? _values;
 
   @mustCallSuper
-  BaseFirebaseEntity.fromSnapshot(this._snapshot);
+  BaseFirebaseEntity.fromSnapshot(this._snapshot) : _values = {};
 
   dynamic getValue(String key) => values[key];
 

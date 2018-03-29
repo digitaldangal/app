@@ -5,12 +5,11 @@ import 'package:crochet_land/model/supply.dart';
 import 'package:crochet_land/services/SupplyService.dart';
 import 'package:crochet_land/services/project_service.dart';
 import 'package:flutter/material.dart';
-
+import 'package:service_registry/service_registry.dart';
 
 class ProjectMaterials extends StatefulWidget {
-
-  static SupplyRepository supplyService = new SupplyRepository();
-  static ProjectService projectService = new ProjectService();
+  final SupplyRepository supplyService = ServiceRegistry.getService(SupplyRepository);
+  final ProjectService projectService = ServiceRegistry.getService(ProjectService);
 
   final Project project;
 
@@ -23,7 +22,6 @@ class ProjectMaterials extends StatefulWidget {
 }
 
 class _ProjectMaterialState extends State<ProjectMaterials> {
-
   bool loadingSupplies = true;
   List<Supply> supplies = <Supply>[];
   Project project;
@@ -41,8 +39,7 @@ class _ProjectMaterialState extends State<ProjectMaterials> {
     setState(() {
       loadingSupplies = true;
     });
-    ProjectMaterials.supplyService.loadFromKeys(project.suppliesKeys)
-        .then((list) {
+    widget.supplyService.loadFromKeys(project.suppliesKeys).then((list) {
       debugPrint('upaded list $list');
       setState(() {
         supplies = list;
@@ -55,11 +52,10 @@ class _ProjectMaterialState extends State<ProjectMaterials> {
     setState(() {
       this._addingSupply = true;
     });
-    await ProjectMaterials.supplyService.insert(supply);
+    await widget.supplyService.insert(supply);
     debugPrint("Supply added $supply");
     project.addSupply(supply.key);
-    await ProjectMaterials.projectService.update(project);
-
+    await widget.projectService.update(project);
 
     setState(() {
       this._addingSupply = false;
@@ -67,23 +63,30 @@ class _ProjectMaterialState extends State<ProjectMaterials> {
     updateSupplies();
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (loadingSupplies) {
-      return new Container(padding: new EdgeInsets.all(8.0),
+      return new Container(
+        padding: new EdgeInsets.all(8.0),
         child: new Center(child: new CircularProgressIndicator()),
       );
     }
-    return new Container(padding: new EdgeInsets.all(8.0),
+    return new Container(
+        padding: new EdgeInsets.all(8.0),
         child: new Column(children: <Widget>[
-          supplies.isEmpty ? new Expanded(child: new Center(
-            child: new Text("Adiciona um material vai..."),))
+          supplies.isEmpty
+              ? new Expanded(
+              child: new Center(
+                child: new Text("Adiciona um material vai..."),
+              ))
               : new SupplyList(supplies),
-          this._addingSupply ? new Center(
-            child: new CircularProgressIndicator(),)
-              : new AddSupplyForm(onAddSupply: _onAddSupply,),
-        ])
-    );
+          this._addingSupply
+              ? new Center(
+            child: new CircularProgressIndicator(),
+          )
+              : new AddSupplyForm(
+            onAddSupply: _onAddSupply,
+          ),
+        ]));
   }
 }

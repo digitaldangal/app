@@ -13,13 +13,14 @@ class _BlogPostListState extends State<BlogPostList> {
 
   List<Map<String, dynamic>> _posts = [];
 
-  final durationBase = const Duration(milliseconds: 2000);
+  final durationBase = const Duration(milliseconds: 500);
 
   _BlogPostListState();
 
   @override
   void initState() async {
     _refreshKey.currentState.show();
+    super.initState();
   }
 
   _loadBlogPosts() async {
