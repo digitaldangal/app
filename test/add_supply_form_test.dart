@@ -13,10 +13,11 @@ void main() {
       expect(supply.type, 'Yarn');
     };
 
-    await tester.pumpWidget(
-        new MaterialApp(home: new Scaffold(
-            body: new AddSupplyForm(onAddSupply: onAddSupply,))));
-
+    await tester.pumpWidget(new MaterialApp(
+        home: new Scaffold(
+            body: new AddSupplyForm(
+              onAddSupply: onAddSupply,
+            ))));
 
     await tester.pump();
 
@@ -25,7 +26,6 @@ void main() {
     await tester.tap(find.byType(DropdownButton));
 
     await tester.pump();
-
 
     //dropdown animation
     await tester.pump();

@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:crochet_land/model/project.dart';
+import 'package:crochet_land/stores/project_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:service_registry/service_registry.dart';
 
 String formatDuration(Duration duration) {
   String twoDigits(int n) {
@@ -20,59 +22,31 @@ String formatDuration(Duration duration) {
 
 class CounterComponentState extends State<CounterComponent> with TickerProviderStateMixin {
   Project _project;
-  bool timeRunning = false;
-  Timer _timer;
-
-  Animation<int> _timeAnimation;
-  AnimationController animationController;
 
   CounterComponentState(this._project);
 
+  StreamSubscription _projectStoreSubscription;
+
   @override
   void initState() {
-    animationController = new AnimationController(
-      duration: new Duration(milliseconds: 500),
-      vsync: this,
-    )
-      ..addListener(() {
-        setState(() {
-          _project.timeSpent = _timeAnimation.value.toInt();
-        });
-      });
-
-    _timeAnimation = new Tween(begin: 0, end: _project.timeSpent)
-        .animate(new CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn));
-
-    setState(() {
-      _project.timeSpent = _timeAnimation.value.toInt();
-    });
-
-    new Future.delayed(new Duration(milliseconds: 200), () {
-      animationController.forward();
+    _projectStoreSubscription =
+        ServiceRegistry.getService<ProjectStore>(ProjectStore).listen((store) {
+          this.setState(() {});
     });
     super.initState();
   }
 
-  _tickTime(timer) {
-    setState(() {
-      this._project.timeSpent++;
-    });
-  }
-
   _resumeTimer() {
-    _timer = new Timer.periodic(const Duration(seconds: 1), _tickTime);
+    ProjectStore.startTimerAction(_project);
   }
 
   _pauseTimer() {
-    if (_timer != null) {
-      this._timer.cancel();
-    }
+    ProjectStore.stopTimerAction(_project);
   }
 
   @override
   void dispose() {
-    animationController.dispose();
-    _pauseTimer();
+    _projectStoreSubscription.cancel();
     super.dispose();
   }
 
@@ -138,16 +112,13 @@ class CounterComponentState extends State<CounterComponent> with TickerProviderS
                 .accentColor,
             onPressed: () {
               print('tap iniciar/pausar');
-              if (timeRunning) {
+              if (widget.store.isCountingTime(_project)) {
                 _pauseTimer();
               } else {
                 _resumeTimer();
               }
-              setState(() {
-                timeRunning = !timeRunning;
-              });
             },
-            child: new Text(timeRunning ? 'Pausar' : 'Iniciar'),
+            child: new Text(widget.store.isCountingTime(_project) ? 'Pausar' : 'Iniciar'),
           )
         ],
       ),
@@ -163,9 +134,7 @@ class CounterComponentState extends State<CounterComponent> with TickerProviderS
               new GestureDetector(
                 onLongPress: () {
                   print('longPress -1');
-                  setState(() {
-                    _project.counter = 0;
-                  });
+                  ProjectStore.resetCounterAction(_project);
                 },
                 child: new RaisedButton(
                   color: Theme
@@ -174,9 +143,7 @@ class CounterComponentState extends State<CounterComponent> with TickerProviderS
                   onPressed: _project.counter > 0
                       ? () {
                     print('tap -1');
-                    setState(() {
-                      _project.counter--;
-                    });
+                    ProjectStore.decreaseCounterAction(_project);
                   }
                       : null,
                   child: new Text('-1'),
@@ -188,9 +155,7 @@ class CounterComponentState extends State<CounterComponent> with TickerProviderS
                     .accentColor,
                 onPressed: () {
                   print('tap +1');
-                  setState(() {
-                    _project.counter++;
-                  });
+                  ProjectStore.increaseCounterAction(_project);
                 },
                 child: new Text('+1'),
               ),
@@ -202,9 +167,9 @@ class CounterComponentState extends State<CounterComponent> with TickerProviderS
   }
 }
 
-@immutable
 class CounterComponent extends StatefulWidget {
-  Project _project;
+  final Project _project;
+  final ProjectStore store = ServiceRegistry.getService<ProjectStore>(ProjectStore);
 
   CounterComponent(this._project);
 

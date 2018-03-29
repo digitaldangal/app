@@ -1,28 +1,43 @@
+import 'dart:async';
+
 import 'package:crochet_land/components/projetcs/project_details.dart';
 import 'package:crochet_land/components/undoable_snack_action.dart';
 import 'package:crochet_land/config/routes.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/services/analytics.dart';
 import 'package:crochet_land/services/project_service.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:crochet_land/stores/project_store.dart';
 import 'package:flutter/material.dart';
 import 'package:service_registry/service_registry.dart';
 
 class ProjectsList extends StatefulWidget {
+  final ProjectStore store = ServiceRegistry.getService<ProjectStore>(ProjectStore);
 
   @override
   _ProjectsListState createState() => new _ProjectsListState();
 }
 
 class _ProjectsListState extends State<ProjectsList> {
-  DatabaseReference _projectsRef;
+  StreamSubscription _projectStoreSubscription;
 
   _ProjectsListState() {
-    _projectsRef = ServiceRegistry
-        .getService<ProjectService>(ProjectService)
-        .databaseReference;
     AnalyticsService.analytics.logViewItemList(itemCategory: 'projects');
+  }
+
+  @override
+  void initState() {
+    _projectStoreSubscription =
+        ServiceRegistry.getService<ProjectStore>(ProjectStore).listen((store) {
+          this.setState(() {});
+        });
+    ProjectStore.loadMyProjectsAction();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _projectStoreSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -34,25 +49,15 @@ class _ProjectsListState extends State<ProjectsList> {
           },
           child: new Icon(Icons.add),
         ),
-        body: new FirebaseAnimatedList(
-          query: _projectsRef.orderByChild('archived').endAt(false),
-          sort: (a, b) => b.key.compareTo(a.key),
-          padding: new EdgeInsets.all(8.0),
-          defaultChild: new Center(
-            child: new Text('Você ainda não começou nenhum projeto...'),
-          ),
-          itemBuilder: (context, DataSnapshot snapshot, Animation<double> animation, index) {
-            final project = new Project.fromSnapshot(snapshot);
-            return new FadeTransition(
-                opacity: animation,
-                child: new Column(
-                  children: <Widget>[
-                    new ProjectListItem(project),
-                    new Divider(),
-                  ],
-                ));
-          },
-        ));
+        body: widget.store.projects.isEmpty
+            ? new Text('Você ainda não começou nenhum projeto...')
+            : new ListView.builder(
+            itemCount: widget.store.chronologically.length,
+            padding: new EdgeInsets.all(8.0),
+            itemBuilder: (context, index) {
+              var project = widget.store.chronologically[index];
+              return new ProjectListItem(project);
+            }));
   }
 }
 
