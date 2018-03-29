@@ -1,11 +1,11 @@
 import 'package:crochet_land/model/project.dart';
-import 'package:crochet_land/services/project_service.dart';
+import 'package:crochet_land/stores/project_store.dart';
 import 'package:flutter/material.dart';
 import 'package:service_registry/service_registry.dart';
 import 'package:validator/validator.dart';
 
 class NewProjectForm extends StatefulWidget {
-  final ProjectService projectService = ServiceRegistry.getService(ProjectService);
+  final ProjectStore store = ServiceRegistry.getService<ProjectStore>(ProjectStore);
 
   @override
   State<StatefulWidget> createState() {
@@ -39,7 +39,7 @@ class _NewProjectFormState extends State<NewProjectForm> {
                 setState(() {
                   _saving = true;
                 });
-                await widget.projectService.insert(_project);
+                await ProjectStore.createProjectAction(_project);
                 Navigator.of(context).pop();
               }
             },

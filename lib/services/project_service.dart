@@ -12,11 +12,13 @@ class ProjectService extends FirebaseUserAwareCrudRepository<Project> {
   ProjectService._private() : super('projects');
 
   loadMyProjects() async {
-    var query = databaseReference.orderByChild('archived').endAt(false);
+    DataSnapshot snapshot = await databaseReference.orderByChild('archived').endAt(false).once();
 
-    DataSnapshot snapshot = await query.once();
-
-    (snapshot.value as Map<String, dynamic>).forEach(
-            (String key, values) => ProjectStore.loadProjectAction(new Project.fromValues(values)));
+    (snapshot.value as Map<String, dynamic>).forEach((String key, values) {
+      if (values['key'] == null) {
+        values['key'] = key;
+      }
+      ProjectStore.loadProjectAction(new Project.fromValues(values));
+    });
   }
 }

@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:crochet_land/components/projetcs/projects_component.dart';
 import 'package:crochet_land/model/project.dart';
 import 'package:crochet_land/services/project_service.dart';
+import 'package:crochet_land/stores/project_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -12,8 +11,8 @@ import 'mocks.dart';
 
 void main() {
   Project project;
-  MockDatabaseReference databaseReference;
   ProjectService projectService;
+  ProjectStore projectStore = new ProjectStore();
 
   setUp(() {
     project = new Project();
@@ -22,14 +21,10 @@ void main() {
     project.title = 'Amazing project';
     project.description = 'Amazing project Description';
 
-    databaseReference = new MockDatabaseReference();
     projectService = new MockProjectService();
-    when(projectService.databaseReference).thenReturn(databaseReference);
-
-    when(databaseReference.orderByChild(any)).thenReturn(databaseReference);
-    when(databaseReference.endAt(any)).thenReturn(databaseReference);
 
     ServiceRegistry.registerService(ProjectService, projectService);
+    ServiceRegistry.registerService(ProjectStore, projectStore);
   });
 
   testWidgets('Project List Item loads project data', (WidgetTester tester) async {
@@ -55,6 +50,9 @@ void main() {
   testWidgets('Project List Item loads project data', (WidgetTester tester) async {
     MockNavigatorObserver mockNavigatorObserver = new MockNavigatorObserver();
 
+    var called = false;
+    ProjectStore.loadMyProjectsAction.listen((_) => called = true);
+
     await tester.pumpWidget(new MaterialApp(
       home: new Scaffold(body: new ProjectsList()),
       onGenerateRoute: (_) => null,
@@ -64,22 +62,14 @@ void main() {
       ],
     ));
 
-    verify(databaseReference.onValue).called(greaterThan(0));
-
-    //TODO this test right now is too poor, doesn't actually test it loads, but I don't want to test the FirebaseAnimatedList
+    expect(called, isTrue);
   });
 
   testWidgets('Project loads empty message when project list is empty',
           (WidgetTester tester) async {
-    when(projectService.databaseReference).thenReturn(databaseReference);
-
-    when(databaseReference.onValue).thenAnswer((_) => new Stream.empty());
-
     await tester.pumpWidget(new MaterialApp(
       home: new Scaffold(body: new ProjectsList()),
     ));
-
-    verify(databaseReference.onValue).called(greaterThan(0));
 
     expect(find.text('Você ainda não começou nenhum projeto...'), findsOneWidget);
   });
