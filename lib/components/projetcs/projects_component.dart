@@ -1,24 +1,27 @@
 import 'package:crochet_land/components/projetcs/project_details.dart';
 import 'package:crochet_land/components/undoable_snack_action.dart';
+import 'package:crochet_land/config/routes.dart';
 import 'package:crochet_land/model/project.dart';
-import 'package:crochet_land/routes.dart';
 import 'package:crochet_land/services/analytics.dart';
 import 'package:crochet_land/services/project_service.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:service_registry/service_registry.dart';
 
 class ProjectsList extends StatefulWidget {
-  static ProjectService projectService = new ProjectService();
 
   @override
   _ProjectsListState createState() => new _ProjectsListState();
 }
 
 class _ProjectsListState extends State<ProjectsList> {
-  DatabaseReference _projectsRef = ProjectsList.projectService.databaseReference;
+  DatabaseReference _projectsRef;
 
   _ProjectsListState() {
+    _projectsRef = ServiceRegistry
+        .getService<ProjectService>(ProjectService)
+        .databaseReference;
     AnalyticsService.analytics.logViewItemList(itemCategory: 'projects');
   }
 
@@ -54,6 +57,7 @@ class _ProjectsListState extends State<ProjectsList> {
 }
 
 class ProjectListItem extends StatelessWidget {
+  final ProjectService projectService = ServiceRegistry.getService<ProjectService>(ProjectService);
   final Project _project;
 
   ProjectListItem(this._project);
@@ -118,7 +122,7 @@ class ProjectListItem extends StatelessWidget {
                             onTap: () {
                               Navigator.of(context).pop();
                               showUndoableAction(context, "Projeto arquivado", () {
-                                ProjectsList.projectService.archive(this._project);
+                                projectService.archive(this._project);
                               });
                             },
                           ),
@@ -136,7 +140,7 @@ class ProjectListItem extends StatelessWidget {
                             onTap: () {
                               Navigator.of(context).pop();
                               showUndoableAction(context, "Projeto removido", () {
-                                ProjectsList.projectService.delete(this._project);
+                                projectService.delete(this._project);
                               });
                             },
                           ),

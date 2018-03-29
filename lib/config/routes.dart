@@ -5,6 +5,7 @@ import 'package:crochet_land/components/projetcs/new_project_form.dart';
 import 'package:crochet_land/components/projetcs/projects_component.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:service_registry/service_registry.dart';
 
 var projectsRouteHandler =
 new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
@@ -43,7 +44,7 @@ new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
 });
 
 class Routes {
-  static final router = new Router();
+  static final router = ServiceRegistry.getService<Router>(Router);
 
   static String login = '/';
   static String home = '/home';
@@ -51,7 +52,7 @@ class Routes {
   static String newProject = '/projects/new';
   static String news = '/news';
 
-  static void configureRoutes(Router router) {
+  static void configureRoutes() {
     router.define(login, handler: loginRouteHandler);
     router.define(
       home,

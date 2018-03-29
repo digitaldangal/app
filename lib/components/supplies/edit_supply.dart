@@ -31,6 +31,7 @@ class _EditSupplyFormState extends State<EditSupplyForm> {
     supplyPriceController = new TextEditingController(text: supply.price?.toString() ?? '0');
     supplyPriceController
         .addListener(() => supply.price = double.parse(supplyPriceController.text).toDouble());
+    super.initState();
   }
 
   @override

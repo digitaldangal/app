@@ -43,6 +43,8 @@ class Project extends BaseFirebaseEntity {
 
   Project.fromSnapshot(snapshot) : super.fromSnapshot(snapshot);
 
+  Project.fromValues(Map<String, dynamic> values) : super.fromValues(values);
+
   Project();
 
 }

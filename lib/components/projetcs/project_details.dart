@@ -5,7 +5,7 @@ import 'package:crochet_land/services/project_service.dart';
 import 'package:flutter/material.dart';
 
 class ProjectWidget extends StatefulWidget {
-  Project _project;
+  final Project _project;
 
   ProjectWidget(this._project);
 

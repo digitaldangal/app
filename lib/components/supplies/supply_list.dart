@@ -2,11 +2,12 @@ import 'package:crochet_land/components/supplies/edit_supply.dart';
 import 'package:crochet_land/model/supply.dart';
 import 'package:crochet_land/services/SupplyService.dart';
 import 'package:flutter/material.dart';
+import 'package:service_registry/service_registry.dart';
 
 class SupplyList extends StatefulWidget {
-  static SupplyRepository supplyRepository = new SupplyRepository();
+  final SupplyRepository supplyRepository = ServiceRegistry.getService(SupplyRepository);
 
-  List<Supply> supplies;
+  final List<Supply> supplies;
 
   SupplyList(this.supplies);
 
@@ -36,7 +37,7 @@ class _SupplyListState extends State<SupplyList> {
               supply,
               onOK: (updatedSupply) async {
                 Navigator.of(context).pop();
-                SupplyList.supplyRepository.update(updatedSupply);
+                widget.supplyRepository.update(updatedSupply);
               },
             ));
       },

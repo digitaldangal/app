@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:crochet_land/config/routes.dart';
+import 'package:crochet_land/stores/user_store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:service_registry/service_registry.dart';
 
 import '../components/unavailable.dart';
-import '../routes.dart';
 import '../services/auth.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -13,14 +17,25 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  static final auth = new Auth();
+  static final auth = ServiceRegistry.getService<AuthenticationService>(AuthenticationService);
+
+  StreamSubscription _userSubscription;
 
   FirebaseUser _user;
 
   @override
   void initState() {
-    _user = auth.user;
+    _userSubscription = ServiceRegistry.getService<UserStore>(UserStore).listen((store) {
+      setState(() {
+        _user = (store as UserStore).user;
+      });
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _userSubscription.cancel();
   }
 
   get avatar => _user?.photoUrl ?? 'http://i.pravatar.cc/300?id=a';
@@ -108,7 +123,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   trailing: new Icon(Icons.power_settings_new),
                   title: new Text('Sair'),
                   onTap: () {
-                    auth.signout();
+                    auth.logout();
                     Navigator.of(context).pushReplacementNamed(Routes.login);
                   },
                 )
